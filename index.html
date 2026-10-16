@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{color-scheme:light;-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
 <title>Stir Crazy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -128,9 +134,22 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 .steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:s}
 .steps li{counter-increment:s;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px}
 .steps li::before{content:counter(s);font-family:var(--display);font-weight:800;font-size:18px;color:var(--num);line-height:1.2}
+.seg.tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.seg.tg button{padding:8px 10px;font-size:14px}
+.ing-b{font:inherit;color:inherit;background:none;border:0;border-bottom:1px dotted var(--muted);padding:0;text-align:left;cursor:pointer}
+.ing-b:hover,.ing-b[aria-expanded="true"]{color:var(--num);border-bottom-color:var(--num)}
+.ing-b:focus-visible,.ing-find:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.ing-d{grid-column:1/-1;background:var(--tile);border-radius:8px;padding:10px 12px;display:grid;gap:6px;font-size:14px}
+.ing-d p{margin:0}
+.ing-t{font-family:var(--display);font-weight:800;font-size:19px;text-transform:uppercase;color:var(--num)}
+.ing-s{padding-left:14px;position:relative;color:var(--muted)}
+.ing-s::before{content:"-";position:absolute;left:3px}
+.ing-find{justify-self:start;margin-top:4px}
 .foot{display:grid;gap:4px;font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .foot b{font-weight:600;color:var(--ink)}
 </style>
+</head>
+<body>
 
 <div class="app">
   <header class="hd">
@@ -144,6 +163,7 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
       <button class="btn" id="fbtn" type="button" aria-expanded="false" aria-controls="adv">Filters<span id="fn"></span></button>
     </div>
     <div class="chips scroll" id="f-b" role="group" aria-label="Base spirit"></div>
+    <div class="seg tg" id="f-tg" role="group" aria-label="Sweet or sour"><button type="button" data-tg="Sweet" aria-pressed="false">Sweet</button><button type="button" data-tg="" aria-pressed="true">Any</button><button type="button" data-tg="Sour" aria-pressed="false">Sour</button></div>
     <div class="adv" id="adv" hidden>
       <div class="grp"><div class="grp-l" id="l-t">Taste</div><div class="chips" id="f-t" role="group" aria-labelledby="l-t"></div></div>
       <div class="grp"><div class="grp-l" id="l-s">Style</div><div class="chips" id="f-s" role="group" aria-labelledby="l-s"></div></div>
@@ -388,8 +408,8 @@ var D=[
 var BASES=["Brandy","Gin","Liqueur & wine","Non-alcoholic","Rum","Tequila","Vodka","Whiskey"];
 var DIFF=["","Easy","Medium","Hard"];
 var METHOD={stir:"Stirred",shake:"Shaken",build:"Built",blend:"Blended"};
-var F={b:"",t:"",d:0,s:"",q:"",sf:""};
-var unit="oz",serv=1,cur=null,lastTile=null,fav=[];
+var F={b:"",t:"",d:0,s:"",q:"",sf:"",k:""};
+var openIng=-1,unit="oz",serv=1,cur=null,lastTile=null,fav=[];
 try{var u=localStorage.getItem("cp-unit");if(u==="ml"||u==="oz")unit=u}catch(e){}
 try{fav=JSON.parse(localStorage.getItem("cp-fav")||"[]");if(!Array.isArray(fav))fav=[]}catch(e){fav=[]}
 
@@ -420,7 +440,7 @@ function chipRow(id,key,items){
   $(id).innerHTML=h;
 }
 chipRow("f-b","b",[["__fav","&#9829; Saved"]].concat(BASES.map(function(b){return [b,b]})));
-chipRow("f-t","t",[["Bitter","Bitter"],["Savory","Savory"],["Sour","Sour"],["Sweet","Sweet"]]);
+chipRow("f-t","t",[["Bitter","Bitter"],["Savory","Savory"]]);
 chipRow("f-s","s",[["Hot","Hot"],["Long","Long drink"],["Short","Short drink"],["Spirit-forward","Spirit-forward"]]);
 chipRow("f-d","d",[[1,"Easy"],[2,"Medium"],[3,"Hard"]]);
 chipRow("f-sf","sf",[["1","Sugar-free"]]);
@@ -431,6 +451,7 @@ function matches(x){
   if(F.t&&x.tags.indexOf(F.t)<0)return false;
   if(F.d&&x.d!==+F.d)return false;
   if(F.sf&&!x.sf)return false;
+  if(F.k&&x.keys.indexOf(F.k)<0)return false;
   if(F.s){
     if(F.s==="Spirit-forward"){if(x.tags.indexOf(F.s)<0)return false}
     else if(glassType(x)!==F.s)return false;
@@ -445,6 +466,7 @@ function syncChips(){
   document.querySelectorAll(".chip").forEach(function(c){
     c.setAttribute("aria-pressed",String(String(F[c.dataset.k]||"")===c.dataset.v));
   });
+  document.querySelectorAll("[data-tg]").forEach(function(b){b.setAttribute("aria-pressed",String(F.t===b.dataset.tg))});
   var fc=document.querySelector('[data-v="__fav"]');
   if(fc)fc.innerHTML="&#9829; Saved"+(fav.length?" ("+fav.length+")":"");
 }
@@ -457,7 +479,9 @@ function render(){
   if(F.s)act.push(F.s==="Short"||F.s==="Long"?F.s+" drink":F.s);
   if(F.d)act.push(DIFF[F.d]);
   if(F.sf)act.push("Sugar-free");
-  $("fn").textContent=act.length?" ("+act.length+")":"";
+  if(F.k)act.push("with "+INFO[F.k][0].toLowerCase());
+  var nf=act.length-((F.t==="Sweet"||F.t==="Sour")?1:0)-(F.k?1:0);
+  $("fn").textContent=nf>0?" ("+nf+")":"";
   $("count").innerHTML=res.length+(res.length===1?" drink":" drinks")+'<span>'+(act.length?act.join(", "):"of "+D.length)+'</span>';
   var h="";
   res.forEach(function(x){
@@ -485,8 +509,9 @@ document.querySelector(".top").addEventListener("click",function(e){
   F[k]=(k==="d"&&v)?+v:v;
   render();
 });
+$("f-tg").addEventListener("click",function(e){var b=e.target.closest("[data-tg]");if(!b)return;var v=b.dataset.tg;F.t=(F.t===v)?"":v;render()});
 $("q").addEventListener("input",function(){F.q=this.value.trim().toLowerCase();render()});
-$("reset").addEventListener("click",function(){F={b:"",t:"",d:0,s:"",q:"",sf:""};$("q").value="";render()});
+$("reset").addEventListener("click",function(){F={b:"",t:"",d:0,s:"",q:"",sf:"",k:""};$("q").value="";render()});
 $("rand").addEventListener("click",function(){
   if(!res.length)return;
   openSheet(D.indexOf(res[Math.floor(Math.random()*res.length)]),$("rand"));
@@ -503,6 +528,162 @@ $("grid").addEventListener("click",function(e){
   var t=e.target.closest(".open");if(t)openSheet(+t.dataset.i,t);
 });
 
+/* ---- Ingredient guide: INFO[key] = [title, what it is, [substitutes], search term] ---- */
+var INFO={
+tequila:["Tequila","Agave spirit made mostly in Jalisco, Mexico. Blanco is unaged, peppery and bright. Reposado rests in oak for 2 to 12 months and tastes rounder. Look for '100% agave' on the label.",["Mezcal for a smoky version","Blanco and reposado swap 1:1, reposado is mellower","Sotol if you can find it"],"tequila"],
+mezcal:["Mezcal","Agave spirit, often made from agave roasted in earth pits, which gives it smoke and a savory edge.",["Tequila plus a pinch of smoked salt","Tequila with a tiny float of peated scotch"],"mezcal"],
+vodka:["Vodka","Neutral spirit with little flavor of its own. Citrus and vanilla vodkas add flavor and sometimes sugar.",["Plain vodka plus a strip of lemon peel for citrus vodka","Plain vodka plus 1/4 tsp vanilla extract for vanilla vodka","Gin or white rum if you want more character"],"vodka"],
+gin:["Gin","Neutral spirit flavored with juniper and other botanicals. Old Tom gin is a little sweeter and rounder than London dry.",["Another London dry gin","For Old Tom: London dry gin plus 1/4 tsp simple syrup","Vodka plus a lemon peel if you want it less botanical"],"gin"],
+bourbon:["Bourbon","American whiskey made from at least 51% corn and aged in new charred oak. Sweet, with vanilla and caramel.",["Rye whiskey for a drier, spicier drink","Canadian whisky works in most recipes","Tennessee whiskey"],"bourbon"],
+rye:["Rye whiskey","Whiskey made mostly from rye grain, spicier and drier than bourbon. Much Canadian whisky is called 'rye' and is lighter.",["Bourbon, which is sweeter","Canadian whisky"],"rye"],
+whiskey:["Whiskey","Grain spirit aged in oak. The style changes the drink: bourbon is sweet, rye is spicy, Irish is light and scotch can be smoky.",["Use whatever bottle you have","Bourbon or Canadian whisky is the safe choice"],"whiskey"],
+scotch:["Blended scotch","Blend of malt and grain whiskies from Scotland. Mild and balanced, with little smoke.",["Irish whiskey or Canadian whisky for something lighter","Bourbon for a sweeter drink"],"scotch"],
+islay:["Islay scotch","Heavily peated, smoky scotch such as Laphroaig or Ardbeg. Used here as a small float for aroma.",["Mezcal, which is also smoky","Any other peated scotch"],"islay"],
+irishwhiskey:["Irish whiskey","Smooth, triple-distilled whiskey, lighter than bourbon or scotch.",["Any smooth blended whisky","Bourbon for a sweeter drink"],"irish whiskey"],
+whiterum:["White rum","Light, clean rum, lightly aged and filtered. The standard for daiquiris and mojitos.",["Gold or lightly aged rum","Cachaca, which is grassier","Rhum agricole"],"white rum"],
+darkrum:["Dark rum","Aged or molasses-rich rum with caramel and baking spice notes.",["Gold or aged rum","Spiced rum, which is sweeter","Blackstrap rum for a stronger molasses flavor"],"dark rum"],
+agedrum:["Aged rum","Rum aged in oak for years, smooth and rich. Jamaican rum is funky and fruity.",["Dark rum","Another aged rum, such as a Barbados or Demerara rum"],"aged"],
+agricole:["Rhum agricole","Rum made from fresh sugar cane juice, mostly from Martinique. Grassy and vegetal.",["Cachaca, which is also made from fresh cane juice","White rum"],"rhum agricole"],
+cachaca:["Cachaca","Brazilian spirit from fresh sugar cane juice. Grassy and a bit funky. It is the base of the caipirinha.",["Rhum agricole","White rum"],"cachaca"],
+coconutrum:["Coconut rum","Rum flavored with coconut and sweetened, such as Malibu. Around 21% ABV.",["White rum plus 1/2 oz cream of coconut, with less sweetener elsewhere","White rum plus a splash of coconut water"],"coconut rum"],
+cognac:["Cognac","Grape brandy from the Cognac region of France, double-distilled and aged in oak.",["Armagnac","Any decent brandy","Spanish brandy de Jerez"],"cognac"],
+brandy:["Brandy","Spirit distilled from wine or other fruit. Mid-priced brandy is fine for mixing.",["Cognac","Bourbon in a pinch"],"brandy"],
+pisco:["Pisco","Unaged grape brandy from Peru or Chile. Floral and bright.",["Any light, unaged grape brandy","Cognac, which is richer"],"pisco"],
+applejack:["Applejack","American apple brandy, often blended with neutral spirit.",["Calvados","Any brandy plus a splash of apple juice"],"applejack"],
+cointreau:["Cointreau","Clear French triple sec made from sweet and bitter orange peels. About 40% ABV and crisp.",["Any triple sec, which is usually sweeter","Orange curacao","Grand Marnier, which is richer"],"cointreau"],
+curacao:["Orange curacao","Orange liqueur, often made with dried bitter orange peel. Some are amber or blue.",["Cointreau or triple sec","Grand Marnier"],"curacao"],
+grandmarnier:["Grand Marnier","Cognac-based orange liqueur. Richer and oakier than Cointreau.",["Cointreau","Triple sec plus a splash of cognac"],"grand marnier"],
+coffeeliq:["Coffee liqueur","Sweet liqueur made from coffee and rum or vodka, such as Kahlua or Tia Maria. About 20% ABV.",["Per 1 oz: 1/2 oz strong cold brew, 1/4 oz vodka and 1/4 oz simple syrup","Amaretto or Irish cream for a different flavor"],"coffee liqueur"],
+amaretto:["Amaretto","Sweet Italian almond-flavored liqueur, such as Disaronno.",["Orgeat plus a little brandy","Frangelico (hazelnut)"],"amaretto"],
+campari:["Campari","Bright red Italian bitter aperitivo flavored with orange peel, herbs and rhubarb. About 24% ABV.",["Aperol, which is sweeter and milder (use a little more)","Gran Classico","Cappelletti"],"campari"],
+aperol:["Aperol","Light, sweet-bitter orange aperitivo. Only 11% ABV.",["Campari, which is more bitter (use a little less)","Cappelletti Aperitivo","Select Aperitivo"],"aperol"],
+nonino:["Amaro Nonino","Bittersweet Italian amaro made from grappa, with caramel and orange notes.",["Amaro Montenegro","Averna","Ramazzotti"],"amaro"],
+maraschino:["Maraschino liqueur","Clear, funky cherry liqueur made from Marasca cherries, such as Luxardo. Not the same as the juice from cherry jars.",["Cherry Heering, which is sweeter and darker","Kirsch plus a bar spoon of simple syrup","Leave it out, but the drink loses some complexity"],"maraschino"],
+heering:["Cherry Heering","Danish dark cherry liqueur. Sweeter than maraschino.",["Maraschino liqueur","Kirsch plus a little simple syrup"],"cherry heering"],
+gchart:["Green Chartreuse","French herbal liqueur made by monks from 130 herbs. 55% ABV, intense and vegetal.",["Yellow Chartreuse, which is milder and sweeter","Genepy","Strega"],"green chartreuse"],
+ychart:["Yellow Chartreuse","Sweeter, lower-proof (40%) Chartreuse with honey and saffron notes.",["Green Chartreuse, which is stronger (use a little less)","Strega","Benedictine"],"yellow chartreuse"],
+benedictine:["Benedictine","Honeyed French herbal liqueur with spice and hyssop notes.",["Yellow Chartreuse","Drambuie"],"benedictine"],
+drambuie:["Drambuie","Scotch-based liqueur with honey, herbs and spices.",["Benedictine","Scotch plus a little honey syrup"],"drambuie"],
+galliano:["Galliano","Bright yellow Italian liqueur with vanilla and anise notes.",["Vanilla liqueur","Benedictine"],"galliano"],
+fernet:["Fernet-Branca","Intensely bitter, minty Italian amaro. Used in small amounts.",["Another fernet such as Luxardo or Vigo","Cynar, which is milder"],"fernet"],
+elderflower:["Elderflower liqueur","Floral liqueur with a lychee-like sweetness, such as St-Germain.",["Elderflower cordial (non-alcoholic and sweeter)","Pear liqueur"],"elderflower"],
+cassis:["Creme de cassis","Sweet blackcurrant liqueur.",["Chambord (raspberry)","Creme de mure (blackberry)","Blackcurrant syrup"],"cassis"],
+mure:["Creme de mure","Sweet blackberry liqueur.",["Creme de cassis","Chambord"],"creme de mure"],
+violette:["Creme de violette","Floral violet liqueur with a purple color. Use lightly, too much tastes soapy.",["Leave it out, the drink still works","Parfait amour"],"violette"],
+cacao:["Creme de cacao","Chocolate-flavored liqueur. White is clear, dark is brown, and the flavor is nearly the same.",["Any chocolate liqueur","Dark and white creme de cacao swap 1:1, white keeps the drink pale"],"cacao"],
+menthe:["Creme de menthe","Sweet mint liqueur, green or white. They taste the same.",["Peppermint schnapps, which is stronger","Mint syrup plus a little vodka"],"menthe"],
+irishcream:["Irish cream","Sweet cream liqueur made with Irish whiskey, such as Baileys. About 17% ABV.",["Any cream liqueur","Heavy cream, whiskey and a little chocolate syrup"],"irish cream"],
+limoncello:["Limoncello","Sweet Italian lemon liqueur, 25 to 30% ABV.",["Vodka, simple syrup and lemon zest","Triple sec plus a little lemon juice"],"limoncello"],
+schnapps:["Peach schnapps","Sweet, fruity peach liqueur.",["Any peach liqueur","Peach puree plus a splash of vodka"],"peach schnapps"],
+appleliq:["Sour apple liqueur","Bright green, sweet-tart apple liqueur.",["Apple schnapps","Apple juice plus a splash of vodka (milder)"],"apple liqueur"],
+pimms:["Pimm's No. 1","English gin-based fruit-cup liqueur. Spiced and bittersweet.",["Aperol plus a splash of gin","Sweet vermouth with a few dashes of orange bitters"],"pimm"],
+lillet:["Lillet Blanc","French aperitif wine flavored with orange peel and quinine.",["Cocchi Americano, the closest match","Blanc or white vermouth"],"lillet"],
+sweetvermouth:["Sweet vermouth","Fortified wine flavored with herbs and spices. Red, rich and sweet, such as Carpano Antica or Dolin Rouge. Keep opened bottles in the fridge and use within a month or two.",["Any rosso vermouth","Dubonnet Rouge","Ruby port plus a dash of bitters"],"sweet vermouth"],
+dryvermouth:["Dry vermouth","Pale, herbal fortified wine, such as Dolin Dry or Noilly Prat. Keep opened bottles in the fridge.",["Blanc vermouth, which is sweeter","Dry fino sherry","Lillet Blanc"],"dry vermouth"],
+sherry:["Fino sherry","Pale, dry, nutty fortified wine from Jerez, Spain.",["Manzanilla sherry","Dry vermouth"],"sherry"],
+port:["Port","Sweet fortified wine from Portugal. Ruby is fruity, white is lighter.",["Sweet vermouth","Madeira"],"port"],
+wine:["Wine","Use something you would drink. For sangria and spritzers, dry and fruity is best.",["Red: Garnacha, Merlot or any fruity, lightly oaked red","White: Pinot Grigio or Sauvignon Blanc","Non-alcoholic wine"],"wine"],
+prosecco:["Prosecco","Italian sparkling wine, lighter and fruitier than Champagne.",["Cava or any dry sparkling wine","Cremant","Non-alcoholic sparkling wine"],"prosecco"],
+champagne:["Champagne / sparkling wine","French sparkling wine. Any dry (brut) sparkling wine works in cocktails, so save the good bottle for drinking.",["Cava, Cremant or Prosecco","Non-alcoholic sparkling wine"],"champagne"],
+stout:["Stout","Dark, roasted beer. Guinness is the classic for a Black Velvet.",["Porter","Any dark, low-bitterness beer"],"stout"],
+cider:["Apple cider","Unfiltered, unsweetened apple juice (the non-alcoholic kind).",["Apple juice plus a pinch of cinnamon"],"cider"],
+angostura:["Angostura bitters","Aromatic bitters with gentian and warm spices. 44.7% ABV, used by the dash.",["Peychaud's bitters, which is more anise and cherry","Orange bitters for a brighter drink","Skip it, but the drink will taste flatter"],"angostura"],
+peychaud:["Peychaud's bitters","New Orleans bitters with anise, cherry and floral notes. The signature of a Sazerac.",["Angostura bitters, which is spicier","Any aromatic bitters"],"peychaud"],
+orangebitters:["Orange bitters","Bitters made from bitter orange peel. Brightens spirit-forward drinks.",["Angostura bitters plus a strip of orange zest","Express an orange peel over the drink"],"orange bitters"],
+absinthe:["Absinthe","High-proof spirit of anise, fennel and wormwood. Used here as a rinse for aroma.",["Pastis such as Pernod or Ricard","Herbsaint"],"absinthe"],
+orgeat:["Orgeat","Almond syrup scented with orange flower water. Essential in a Mai Tai.",["Amaretto, using a little less sweetener elsewhere","Almond syrup"],"orgeat"],
+ofw:["Orange flower water","Distilled blossom water. A few drops go a long way.",["A little orange zest","Leave it out"],"orange flower"],
+grenadine:["Grenadine","Pomegranate syrup. Real grenadine is tart. Many bottles are only red sugar syrup.",["Heat equal parts pomegranate juice and sugar until dissolved","Raspberry syrup","Pomegranate molasses thinned with water"],"grenadine"],
+simple:["Simple syrup","Equal parts sugar and water, stirred until dissolved. Keeps about a month in the fridge.",["Honey syrup (equal parts honey and warm water)","Agave syrup, using about 2/3 as much","Maple syrup","A zero-sugar sweetener or sugar-free syrup","Rich syrup (2:1), using half as much"],"simple syrup"],
+agave:["Agave syrup","Sweeter than sugar syrup and thin. Often mixed 2 parts agave to 1 part warm water so it blends cold.",["Simple syrup, using a little more","Honey syrup","Maple syrup"],"agave"],
+honey:["Honey syrup","Honey thinned with equal parts warm water so it mixes into cold drinks.",["Agave syrup","Simple syrup","Maple syrup"],"honey"],
+honeyginger:["Honey-ginger syrup","Equal parts honey and water simmered with sliced fresh ginger, then strained. Makes a Penicillin.",["Honey syrup plus 3 slices of muddled fresh ginger","Ginger syrup"],"honey-ginger"],
+gingersyrup:["Ginger syrup","Sweet syrup made by simmering sliced fresh ginger with sugar and water.",["Honey-ginger syrup","Simple syrup plus a little ginger juice","Ginger liqueur"],"ginger syrup"],
+raspsyrup:["Raspberry syrup","Sweet syrup of raspberries and sugar.",["Simple syrup plus 3 muddled raspberries","Grenadine, which is tarter and redder"],"raspberry"],
+vanillasyrup:["Vanilla syrup","Simple syrup flavored with vanilla.",["Simple syrup plus 1/4 tsp vanilla extract","Vanilla bean paste"],"vanilla syrup"],
+demerara:["Demerara syrup","Rich syrup of demerara sugar and water. Adds a molasses note.",["Simple syrup plus a dash of molasses","Brown sugar syrup","Maple syrup"],"demerara"],
+maple:["Maple syrup","Use real maple syrup. Pairs with whiskey and aged rum.",["Demerara syrup","Honey syrup","Agave syrup"],"maple"],
+sugar:["Sugar","Granulated sugar or a sugar cube, often muddled with bitters or lime.",["About 1/4 oz simple syrup per teaspoon","Maple syrup"],"sugar"],
+lime:["Lime juice","Fresh is much better than bottled. One lime gives about 1 oz.",["Lemon juice, which is milder (swap 1:1)","Bottled lime juice in a pinch","Limeade, with less sweetener"],"lime juice"],
+lemon:["Lemon juice","Fresh is much better than bottled. One lemon gives about 1 to 1.5 oz.",["Lime juice, which is sharper (swap 1:1)","Bottled lemon juice in a pinch"],"lemon juice"],
+orange:["Orange juice","Fresh squeezed is best. One orange gives about 2 to 3 oz.",["Tangerine or clementine juice","Not-from-concentrate carton juice"],"orange juice"],
+bloodorange:["Blood orange juice","Deep red, a little tart and berry-like. In season in winter.",["Orange juice plus a splash of cranberry juice","Orange juice plus a little lemon juice"],"blood orange"],
+grapefruitjuice:["Grapefruit juice","Pink or ruby is sweeter than white.",["Orange juice plus a splash of lemon juice","Grapefruit soda, with less sweetener"],"grapefruit"],
+pineapple:["Pineapple juice","Canned juice is fine. Fresh gives more foam when shaken.",["Orange juice, which is milder","Passion fruit juice for a tropical twist"],"pineapple"],
+cranberry:["Cranberry juice","Cranberry juice cocktail is sweetened. Pure cranberry is very tart.",["Pomegranate juice","Cherry juice","Light cranberry cocktail for less sugar"],"cranberry"],
+tomato:["Tomato juice","Use a good juice with some salt and body.",["Clamato","V8","Tomato passata thinned with water"],"tomato juice"],
+clamato:["Clamato juice","Tomato juice with clam broth, the base of a Canadian Caesar.",["Tomato juice plus a splash of clam juice","Tomato juice plus extra Worcestershire"],"clamato"],
+watermelon:["Watermelon juice","Blend seedless watermelon and strain. Best made fresh.",["Frozen watermelon cubes, blended and strained","Strawberry puree"],"watermelon"],
+passion:["Passion fruit","Tart, tropical and aromatic.",["Passion fruit nectar","Frozen passion fruit puree","Mango puree plus a squeeze of lime"],"passion"],
+cherryjuice:["Cherry juice","Tart cherry juice is the usual choice.",["Cranberry juice","Pomegranate juice"],"cherry juice"],
+pomjuice:["Pomegranate juice","Tart and slightly sweet.",["Cranberry juice","Cherry juice"],"pomegranate juice"],
+creamcoconut:["Cream of coconut","Sweet, thick cooked coconut such as Coco Lopez. Not the same as coconut cream or coconut milk.",["Equal parts coconut cream and simple syrup"],"cream of coconut"],
+whipped:["Lightly whipped cream","Heavy cream whipped only until it thickens and pours, so it floats.",["Shake heavy cream in a jar for 30 seconds","Canned whipped cream in a pinch"],"whipped"],
+cream:["Heavy cream","Rich, with at least 35% fat. Use cold.",["Half-and-half, which is thinner","Coconut cream","Oat cream"],"cream"],
+milk:["Whole milk","Adds body to creamy drinks.",["Half-and-half for a richer drink","Oat milk"],"milk"],
+eggwhite:["Egg white","Adds a silky body and a foam cap. If you serve guests who are pregnant or immunocompromised, use pasteurized egg whites.",["Aquafaba (chickpea liquid), about 3/4 oz per egg white","Pasteurized egg white from a carton","Leave it out, the drink will just be thinner"],"egg white"],
+soda:["Soda water","Plain carbonated water. Club soda has a little added salt and minerals.",["Seltzer or sparkling mineral water","Tonic water, which is sweeter and bitter"],"soda"],
+tonic:["Tonic water","Carbonated water with quinine and sugar. Bitter-sweet.",["Diet or zero-sugar tonic","Soda water plus a squeeze of lime"],"tonic"],
+gingerbeer:["Ginger beer","Spicier than ginger ale. Look for a brand with real ginger bite.",["Ginger ale plus 1/4 oz ginger syrup","Zero-sugar ginger beer"],"ginger beer"],
+gingerale:["Ginger ale","Mild, sweet ginger soda.",["Ginger beer, which is spicier","Lemon-lime soda"],"ginger ale"],
+lemonade:["Lemonade / limeade","Sweetened citrus drink.",["Per 4 oz: 1 oz lemon (or lime) juice, 1/2 oz simple syrup and 2 1/2 oz water","Sugar-free lemonade"],"lemonade"],
+cola:["Cola","Regular cola is sweet.",["Diet cola or a zero-sugar cola"],"cola"],
+lemonlime:["Lemon-lime soda","Sprite, 7UP and similar.",["Soda water plus 1/2 oz simple syrup","Zero-sugar lemon-lime soda"],"lemon-lime"],
+grapefruitsoda:["Grapefruit soda","Jarritos, Squirt or a craft grapefruit soda. Traditional in a Paloma.",["Soda water plus 1 oz grapefruit juice and a pinch of salt","Zero-sugar grapefruit soda"],"grapefruit soda"],
+icedtea:["Iced tea","Unsweetened is best.",["Cold-brewed black tea"],"iced tea"],
+espresso:["Espresso","One fresh shot, about 1 oz. Cool it for a minute before shaking.",["Strong cold brew concentrate","Moka pot coffee","Instant espresso powder dissolved in 1 oz hot water"],"espresso"],
+coffee:["Hot coffee","Freshly brewed and hot.",["Decaf coffee"],"coffee"],
+hotsauce:["Hot sauce","Use a vinegar-based sauce.",["Tabasco","Cholula","Frank's RedHot for less heat"],"hot sauce"],
+worcester:["Worcestershire sauce","Fermented savory sauce made with anchovy and tamarind.",["Soy sauce plus a few drops of vinegar","Vegan Worcestershire"],"worcestershire"],
+celerysalt:["Celery salt and pepper","Savory seasoning for the rim or the drink.",["Regular salt plus ground celery seed","Old Bay for a twist"],"celery"],
+olivebrine:["Olive brine","Liquid from a jar of green olives. Salty and savory.",["Pickled onion or caper brine"],"olive brine"],
+jalapeno:["Jalapeno","Fresh and green with medium heat. Remove the seeds for less heat.",["Serrano pepper, which is hotter","A few drops of hot sauce"],"jalapeno"],
+basil:["Basil","Fresh leaves, pressed gently to release the oils.",["Thai basil","Mint"],"basil"],
+mint:["Mint","Spearmint is the standard. Press, do not shred.",["Basil","Mint syrup, with less sweetener elsewhere"],"mint"],
+cucumber:["Cucumber","English cucumber is best, since it has thin skin and few seeds.",["Peeled regular cucumber","Cucumber juice or cucumber water"],"cucumber"],
+strawberry:["Strawberries","Fresh or frozen. Frozen berries are fine for blended drinks.",["Raspberries or other berries","Frozen strawberries"],"strawberr"],
+mango:["Frozen mango","Frozen chunks give a thick, smoothie-like texture.",["Fresh mango plus extra ice","Frozen peaches or pineapple"],"mango"],
+banana:["Banana","Use ripe, spotted bananas for the best flavor.",["Frozen banana for a thicker drink"],"banana"],
+peach:["White peach puree","Smooth puree of ripe white peaches. Traditional in a Bellini.",["Yellow peach puree","Peach nectar","Frozen peaches, thawed and blended"],"peach"],
+sangriafruit:["Sangria fruit","Chopped fruit that soaks up the wine.",["Any seasonal fruit, such as peaches, berries or grapes"],"chopped"],
+cinnamon:["Cinnamon stick","Whole stick, added to hot drinks.",["1/4 tsp ground cinnamon"],"cinnamon"],
+cloves:["Whole cloves","Strong and warming, so use only a few.",["A pinch (1/8 tsp) of ground cloves","Allspice berries"],"cloves"],
+vanillaext:["Vanilla extract","Pure extract is best.",["Vanilla syrup","Vanilla bean paste"],"vanilla"],
+limewedge:["Lime","Cut wedges or limes cut into eighths for muddling. Press the lime, don't pulverize the pith.",["Lemon"],"lime"],
+orangeslice:["Orange slice","A whole slice, often studded or floated.",["A strip of orange peel"],"orange slice"]
+};
+var MATCH=[
+[/mezcal/,"mezcal"],[/tequila/,"tequila"],[/citrus vodka|vanilla vodka|^vodka$/,"vodka"],[/old tom|^gin$/,"gin"],
+[/islay/,"islay"],[/blended scotch/,"scotch"],[/irish whiskey/,"irishwhiskey"],[/rye whiskey/,"rye"],[/^bourbon/,"bourbon"],[/^whiskey$/,"whiskey"],
+[/rhum agricole/,"agricole"],[/cachaca/,"cachaca"],[/coconut rum/,"coconutrum"],[/aged jamaican|aged rum/,"agedrum"],[/dark rum/,"darkrum"],[/white rum|light rum|^rum$/,"whiterum"],
+[/cognac/,"cognac"],[/^brandy$/,"brandy"],[/pisco/,"pisco"],[/applejack/,"applejack"],
+[/cointreau/,"cointreau"],[/orange curacao/,"curacao"],[/grand marnier/,"grandmarnier"],[/coffee liqueur/,"coffeeliq"],[/amaretto/,"amaretto"],
+[/campari/,"campari"],[/aperol/,"aperol"],[/amaro nonino/,"nonino"],[/maraschino/,"maraschino"],[/cherry heering/,"heering"],
+[/green chartreuse/,"gchart"],[/yellow chartreuse/,"ychart"],[/benedictine/,"benedictine"],[/drambuie/,"drambuie"],[/galliano/,"galliano"],[/fernet/,"fernet"],
+[/elderflower liqueur/,"elderflower"],[/creme de cassis/,"cassis"],[/creme de mure/,"mure"],[/creme de violette/,"violette"],[/creme de cacao/,"cacao"],[/creme de menthe/,"menthe"],
+[/irish cream/,"irishcream"],[/limoncello/,"limoncello"],[/peach schnapps/,"schnapps"],[/sour apple liqueur/,"appleliq"],[/pimm/,"pimms"],[/lillet/,"lillet"],
+[/sweet vermouth/,"sweetvermouth"],[/dry vermouth/,"dryvermouth"],[/fino sherry/,"sherry"],[/\bport\b/,"port"],
+[/dry red wine|dry white wine|^white wine$/,"wine"],[/prosecco/,"prosecco"],[/champagne/,"champagne"],[/stout/,"stout"],[/apple cider/,"cider"],
+[/angostura/,"angostura"],[/peychaud/,"peychaud"],[/orange bitters/,"orangebitters"],[/absinthe/,"absinthe"],[/orgeat/,"orgeat"],[/orange flower water/,"ofw"],[/grenadine/,"grenadine"],
+[/honey-ginger/,"honeyginger"],[/ginger syrup/,"gingersyrup"],[/raspberry syrup/,"raspsyrup"],[/vanilla syrup/,"vanillasyrup"],[/demerara/,"demerara"],[/maple/,"maple"],
+[/agave/,"agave"],[/honey/,"honey"],[/simple syrup/,"simple"],[/sugar/,"sugar"],
+[/lime juice/,"lime"],[/lemon juice/,"lemon"],[/blood orange/,"bloodorange"],[/orange juice/,"orange"],[/grapefruit juice/,"grapefruitjuice"],[/pineapple juice/,"pineapple"],
+[/cranberry/,"cranberry"],[/tomato juice/,"tomato"],[/clamato/,"clamato"],[/watermelon/,"watermelon"],[/passion fruit/,"passion"],[/cherry juice/,"cherryjuice"],[/pomegranate juice/,"pomjuice"],
+[/cream of coconut/,"creamcoconut"],[/lightly whipped cream/,"whipped"],[/heavy cream/,"cream"],[/whole milk/,"milk"],[/egg white/,"eggwhite"],
+[/soda water|sparkling water|sparkling mineral/,"soda"],[/tonic/,"tonic"],[/ginger beer/,"gingerbeer"],[/lemonade|limeade/,"lemonade"],[/ginger ale/,"gingerale"],
+[/^cola$/,"cola"],[/lemon-lime soda/,"lemonlime"],[/grapefruit soda/,"grapefruitsoda"],[/iced tea/,"icedtea"],[/espresso/,"espresso"],[/hot coffee/,"coffee"],
+[/hot sauce/,"hotsauce"],[/worcestershire/,"worcester"],[/celery salt/,"celerysalt"],[/olive brine/,"olivebrine"],[/jalapeno/,"jalapeno"],[/basil/,"basil"],[/mint leaves/,"mint"],[/cucumber/,"cucumber"],
+[/strawberr/,"strawberry"],[/frozen mango/,"mango"],[/banana/,"banana"],[/white peach puree/,"peach"],[/chopped orange and apple/,"sangriafruit"],[/cinnamon/,"cinnamon"],[/cloves/,"cloves"],
+[/vanilla extract/,"vanillaext"],[/lime wedge|lime, cut/,"limewedge"],[/orange slice/,"orangeslice"]
+];
+function infoKey(name){
+  var n=name.toLowerCase();
+  for(var i=0;i<MATCH.length;i++)if(MATCH[i][0].test(n))return MATCH[i][1];
+  return "";
+}
+var keyCount={};
+D.forEach(function(x){var seen={};x.ing.forEach(function(i){var k=infoKey(i[0]);if(k&&!seen[k]){seen[k]=1;keyCount[k]=(keyCount[k]||0)+1}})});
+D.forEach(function(x){x.keys=x.ing.map(function(i){return infoKey(i[0])})});
 function frac(x){
   var r=Math.round(x*8)/8,w=Math.floor(r),f=r-w;
   var m={0:"",0.125:"1/8",0.25:"1/4",0.375:"3/8",0.5:"1/2",0.625:"5/8",0.75:"3/4",0.875:"7/8"};
@@ -526,6 +707,12 @@ function tasteLine(x){
   if(!p.length)return "dry";
   return p.map(function(a){return a[0]>=3?"very "+a[1]:a[0]===2?a[1]:"a touch of "+a[1]}).join(", ");
 }
+function ingDetail(k){
+  var inf=INFO[k],c=keyCount[k]||1;
+  return '<div class="ing-d"><div class="ing-t">'+inf[0]+'</div><p>'+inf[1]+'</p><div class="sec-h">Substitutes</div>'
+    +inf[2].map(function(t){return '<div class="ing-s">'+t+'</div>'}).join("")
+    +'<button class="btn ing-find" type="button" data-k="'+k+'">Find '+c+(c===1?' drink':' drinks')+' with this</button></div>';
+}
 function sheetHtml(x){
   var f=isFav(x);
   var h='<div class="band" data-b="'+x.b+'"><div><h2 id="sh-name">'+x.n+'</h2><div class="sub">'+x.b+' | '+x.g+' | '+METHOD[x.m]+'</div></div>'
@@ -536,7 +723,11 @@ function sheetHtml(x){
    +'<div class="srv"><button class="step-b" type="button" id="dn" aria-label="Fewer servings">-</button><output id="sv" aria-live="polite">'+serv+'x</output><button class="step-b" type="button" id="up" aria-label="More servings">+</button></div>'
    +'<div class="seg" role="group" aria-label="Units"><button type="button" data-u="oz" aria-pressed="'+(unit==="oz")+'">oz</button><button type="button" data-u="ml" aria-pressed="'+(unit==="ml")+'">ml</button></div></div></div>';
   h+='<ul class="ings">';
-  x.ing.forEach(function(i){h+='<li><b>'+qty(i)+'</b><span>'+i[0]+'</span></li>'});
+  x.ing.forEach(function(i,n){
+    var k=infoKey(i[0]),inf=k?INFO[k]:null,open=!!inf&&openIng===n;
+    var nm=inf?'<button class="ing-b" id="ib'+n+'" type="button" data-n="'+n+'" aria-expanded="'+open+'">'+i[0]+'</button>':i[0];
+    h+='<li><b>'+qty(i)+'</b><span>'+nm+'</span>'+(open?ingDetail(k):'')+'</li>';
+  });
   h+='</ul></div>';
   h+='<div class="sec"><div class="sec-h">Method</div><ol class="steps">';
   x.st.forEach(function(s){h+='<li><span>'+s+'</span></li>'});
@@ -550,7 +741,7 @@ function paint(focusId){
   var el=$(focusId||"close");if(el)el.focus();
 }
 function openSheet(i,from){
-  cur=D[i];lastTile=from;serv=1;
+  cur=D[i];lastTile=from;serv=1;openIng=-1;
   $("ov").hidden=false;document.body.style.overflow="hidden";
   paint();
 }
@@ -565,9 +756,14 @@ $("ov").addEventListener("click",function(e){
   else if(e.target.closest("#dn")){serv=Math.max(1,serv-1);fid="dn"}
   else if((b=e.target.closest("[data-u]"))){unit=b.dataset.u;try{localStorage.setItem("cp-unit",unit)}catch(err){}}
   else if(e.target.closest("#sfav")){toggleFav(cur);fid="sfav";render()}
+  else if((b=e.target.closest(".ing-b"))){var n=+b.dataset.n;openIng=(openIng===n)?-1:n;fid="ib"+n}
+  else if((b=e.target.closest(".ing-find"))){F.k=b.dataset.k;F.q="";$("q").value="";closeSheet();render();window.scrollTo(0,0);return}
   else return;
   paint(fid||"close");
 });
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("ov").hidden)closeSheet()});
 render();
 </script>
+
+</body>
+</html>
