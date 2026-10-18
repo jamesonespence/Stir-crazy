@@ -1,10 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style>html{color-scheme:light;-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
-<title>Stir Crazy</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html{color-scheme:light;-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style><title>Stir Crazy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,7 +88,7 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 @media (max-width:560px){.grid{grid-template-columns:minmax(0,1fr)}}
 .tile{position:relative;min-width:0;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--team-bg);border-radius:8px}
 .tile:hover{background:var(--tile-hover)}
-.open{display:grid;gap:2px;width:100%;text-align:left;cursor:pointer;background:none;border:0;border-radius:8px;padding:10px 46px 11px 12px}
+.open{display:grid;gap:2px;width:100%;text-align:left;cursor:pointer;background:none;border:0;border-radius:8px;padding:10px 52px 11px 12px;min-height:84px}
 .t-slot{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--num)}
 .t-name{font-family:var(--display);font-weight:800;font-size:26px;line-height:1;text-transform:uppercase;overflow-wrap:anywhere}
 .t-sub{margin-top:3px;font-size:13px;color:var(--muted)}
@@ -127,7 +121,7 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 .step-b{border:0;background:var(--surface);width:30px;height:30px;font-size:17px;cursor:pointer}
 .srv output{min-width:46px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums;font-size:13px}
 .ings{margin:0;padding:0;list-style:none;border:1px solid var(--line);border-radius:8px}
-.ings li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding:8px 10px;border-top:1px solid var(--line)}
+.ings li{display:grid;grid-template-columns:106px minmax(0,1fr);gap:10px;padding:8px 10px;border-top:1px solid var(--line)}
 .ings li:first-child{border-top:0}
 .ings b{font-family:var(--display);font-weight:800;font-size:19px;line-height:1.1;color:var(--num);font-variant-numeric:tabular-nums}
 .ings span{align-self:center;overflow-wrap:anywhere}
@@ -145,15 +139,33 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 .ing-s{padding-left:14px;position:relative;color:var(--muted)}
 .ing-s::before{content:"-";position:absolute;left:3px}
 .ing-find{justify-self:start;margin-top:4px}
+.pq{width:64px;font-family:var(--display);font-weight:800;font-size:19px;line-height:1.1;color:var(--num);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 6px;text-align:right;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.pq::-webkit-outer-spin-button,.pq::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.pq:focus-visible,.opt input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pstep{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+.pstep button{width:32px;height:32px;border:1px solid var(--line);background:var(--surface);border-radius:6px;font-size:18px;line-height:1;cursor:pointer}
+.pstep button:hover{background:var(--tile-hover)}
+.pstep button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pqu{font-family:var(--display);font-weight:800;font-size:19px;color:var(--num);margin-left:4px}
+.sc{margin-left:6px;color:var(--num);font-weight:600;letter-spacing:0;text-transform:none;font-size:13px}
+.opt{display:inline-flex;gap:6px;align-items:center;margin-left:8px;font-size:13px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.ings li.off b,.ings li.off .ing-b{text-decoration:line-through;opacity:.45}
 .foot{display:grid;gap:4px;font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .foot b{font-weight:600;color:var(--ink)}
-</style>
-</head>
-<body>
+.gls{display:block;overflow:visible}
+.gls .gb{fill:var(--bg);fill-opacity:.55}
+.gls .go{fill:none;stroke:var(--muted);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.gls .ice{fill:#fff;fill-opacity:.38;stroke:#fff;stroke-opacity:.6;stroke-width:1}
+.open .gls{position:absolute;right:8px;bottom:8px;pointer-events:none}
+.art{display:flex;justify-content:center;padding:6px 0 2px;background:var(--bg);border-radius:8px}
+.ver{font:inherit;font-size:12px;font-weight:600;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin-left:8px;cursor:pointer;vertical-align:middle}
+.rn{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px}
+.rn-h{font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase;margin:0}
+</style></head><body>
 
 <div class="app">
   <header class="hd">
-    <h1>Stir Crazy</h1>
+    <h1>Stir Crazy<button class="ver" id="ver" type="button" aria-label="Version and release notes">v1.0</button></h1>
     <div class="meta" id="meta"></div>
   </header>
 
@@ -184,6 +196,10 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 
 <div class="ov" id="ov" hidden>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-name"></div>
+</div>
+
+<div class="ov" id="rnov" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rn-t" id="rnsheet"></div>
 </div>
 
 <script>
@@ -323,7 +339,7 @@ var D=[
 
 /* ---- Margarita family and other easy tequila ---- */
 {n:"Cadillac Margarita",b:"Tequila",d:1,min:4,g:"Rocks",m:"shake",long:0,tx:[1,3,0],ing:[["Reposado tequila",2],["Cointreau",0.75],["Lime juice",1],["Grand Marnier (float)",0.5]],st:["Shake the tequila, Cointreau and lime with ice for 12 seconds.","Strain over fresh ice in a salt-rimmed glass.","Float the Grand Marnier on top."],gar:"Lime wheel"},
-{n:"Aperol Margarita",b:"Tequila",d:1,min:3,g:"Rocks",m:"shake",long:0,tx:[1,2,1],ing:[["Blanco tequila",1.5],["Aperol",1],["Lime juice",1],["Agave syrup (optional)",0.25]],st:["Rim a rocks glass with salt, or half salt and half Tajin for some heat.","Shake everything with ice for 12 seconds.","Strain over fresh ice.","For a more classic margarita, swap the agave for 1/2 oz orange liqueur. For a drier drink, use 3/4 oz Aperol and 2 oz tequila."],gar:"Grapefruit or lime wheel"},
+{n:"Aperol Margarita",b:"Tequila",d:1,min:3,g:"Rocks",m:"shake",long:0,tx:[1,2,1],ing:[["Blanco tequila",1.5],["Aperol",1],["Lime juice",1],["Agave syrup",0.25,"oz",1]],st:["Rim a rocks glass with salt, or half salt and half Tajin for some heat.","Shake everything with ice for 12 seconds.","Strain over fresh ice.","For a more classic margarita, swap the agave for 1/2 oz orange liqueur. For a drier drink, use 3/4 oz Aperol and 2 oz tequila."],gar:"Grapefruit or lime wheel"},
 {n:"Agave Tom Collins",b:"Gin",d:1,min:3,g:"Collins",m:"shake",long:1,tx:[1,2,0],ing:[["Gin",2],["Lemon juice",1],["Agave syrup",0.5],["Soda water","","top"]],st:["Mix the agave 2 parts agave to 1 part warm water so it stirs in.","Shake the gin, lemon and agave with ice.","Strain into a Collins glass over fresh ice.","Top with soda water."],gar:"Lemon wheel"},
 {n:"Tequila Collins",b:"Tequila",d:1,min:3,g:"Collins",m:"shake",long:1,tx:[1,2,0],ing:[["Blanco tequila",2],["Lemon juice",1],["Agave syrup",0.5],["Soda water","","top"]],st:["Mix the agave 2 parts agave to 1 part warm water so it stirs in.","Shake the tequila, lemon and agave with ice.","Strain into a Collins glass over fresh ice.","Top with soda water."],gar:"Lemon wheel"},
 {n:"Skinny Margarita",b:"Tequila",d:1,min:3,g:"Rocks",m:"shake",long:0,tx:[0,3,0],ing:[["Blanco tequila",2],["Lime juice",1],["Orange juice",0.5],["Agave syrup",0.25]],st:["Shake everything with ice for 12 seconds.","Strain over fresh ice."],gar:"Lime wheel"},
@@ -491,7 +507,7 @@ function render(){
     var i=D.indexOf(x),f=isFav(x);
     h+='<div class="tile" data-b="'+x.b+'"><button class="open" type="button" data-i="'+i+'">'
       +'<span class="t-slot">'+x.b+'</span><span class="t-name">'+x.n+'</span>'
-      +'<span class="t-sub">'+DIFF[x.d]+' | '+x.min+' min | '+x.g+'</span></button>'
+      +'<span class="t-sub">'+DIFF[x.d]+' | '+x.min+' min | '+x.g+'</span>'+glassSVG(x,38)+'</button>'
       +'<button class="fav" type="button" data-i="'+i+'" aria-pressed="'+f+'" aria-label="Save '+x.n+'">'+(f?"&#9829;":"&#9825;")+'</button></div>';
   });
   if(!res.length){
@@ -687,6 +703,151 @@ function infoKey(name){
 var keyCount={};
 D.forEach(function(x){var seen={};x.ing.forEach(function(i){var k=infoKey(i[0]);if(k&&!seen[k]){seen[k]=1;keyCount[k]=(keyCount[k]||0)+1}})});
 D.forEach(function(x){x.keys=x.ing.map(function(i){return infoKey(i[0])})});
+/* ---- Drawn glasses: shape from the glass name, liquid colour mixed from the ingredients ---- */
+var GL={
+ coupe:{body:"M14 28 Q14 62 50 64 Q86 62 86 28 Z",extra:"M50 64 V102 M32 106 H68",lvl:32,box:[20,80,36,60],anc:[84,28],rim:[14,86,28]},
+ martini:{body:"M10 26 H90 L50 66 Z",extra:"M50 66 V102 M32 106 H68",lvl:30,box:[24,76,32,50],anc:[88,26],rim:[10,90,26]},
+ margarita:{body:"M10 24 H90 Q90 40 62 50 Q56 54 56 60 H44 Q44 54 38 50 Q10 40 10 24 Z",extra:"M50 60 V102 M32 106 H68",lvl:28,box:[18,82,30,44],anc:[88,24],rim:[10,90,24]},
+ rocks:{body:"M20 40 L24 100 Q24 104 28 104 H72 Q76 104 76 100 L80 40 Z",extra:"",lvl:50,box:[26,74,52,100],anc:[78,40],rim:[20,80,40],ice:1},
+ highball:{body:"M30 14 L32 104 Q32 108 36 108 H64 Q68 108 68 104 L70 14 Z",extra:"",lvl:24,box:[34,66,26,104],anc:[68,14],rim:[30,70,14],ice:1},
+ collins:{body:"M34 8 L35 106 Q35 110 39 110 H61 Q65 110 65 106 L66 8 Z",extra:"",lvl:18,box:[38,62,20,106],anc:[64,8],rim:[34,66,8],ice:1},
+ flute:{body:"M38 14 L40 68 Q50 82 60 68 L62 14 Z",extra:"M50 80 V102 M34 106 H66",lvl:22,box:[43,57,24,66],anc:[60,14],rim:[38,62,14]},
+ wine:{body:"M26 20 Q22 62 50 68 Q78 62 74 20 Z",extra:"M50 68 V102 M32 106 H68",lvl:34,box:[31,69,36,62],anc:[72,20],rim:[26,74,20],ice:1},
+ hurricane:{body:"M30 10 C30 40 44 52 44 64 C44 76 34 84 34 96 Q34 106 42 108 H58 Q66 106 66 96 C66 84 56 76 56 64 C56 52 70 40 70 10 Z",extra:"",lvl:22,box:[38,62,24,100],anc:[68,10],rim:[30,70,10]},
+ mug:{body:"M24 22 H70 V96 Q70 104 62 104 H32 Q24 104 24 96 Z",extra:"M70 34 H80 Q90 34 90 48 V62 Q90 76 78 76 H70",lvl:32,box:[28,66,34,100],anc:[68,22],rim:[24,70,22],ice:1},
+ copper:{body:"M24 22 H70 V96 Q70 104 62 104 H32 Q24 104 24 96 Z",extra:"M70 34 H80 Q90 34 90 48 V62 Q90 76 78 76 H70",lvl:32,box:[28,66,34,100],anc:[68,22],rim:[24,70,22]},
+ julep:{body:"M26 30 L32 96 Q32 100 36 100 H64 Q68 100 68 96 L74 30 Z",extra:"M50 100 V108 M36 112 H64",lvl:36,box:[34,66,38,96],anc:[72,30],rim:[26,74,30]},
+ shot:{body:"M36 54 L40 100 Q40 104 44 104 H56 Q60 104 60 100 L64 54 Z",extra:"",lvl:58,box:[41,59,58,102],rim:[36,64,54]}
+};
+var GK={"Coupe":"coupe","Martini":"martini","Margarita":"margarita","Rocks":"rocks","Highball":"highball","Collins":"collins","Flute":"flute","Wine glass":"wine","Hurricane":"hurricane","Mug":"mug","Copper mug":"copper","Julep cup":"julep","Shot":"shot"};
+/* key -> [colour, tint strength 0-1, milky 0-1] */
+var COL={
+bourbon:["#C8782A",.6],rye:["#B9651F",.55],whiskey:["#C07A2E",.6],scotch:["#C98A3A",.5],irishwhiskey:["#CF9544",.45],islay:["#C98A3A",.5],
+darkrum:["#6B3A1A",.7],agedrum:["#9A5B24",.6],cognac:["#B5651D",.6],brandy:["#B5651D",.6],applejack:["#C48A3A",.5],
+campari:["#C4161C",1],aperol:["#F26A21",1],nonino:["#8B4A1B",.8],sweetvermouth:["#6E2A1A",.9],dryvermouth:["#F3EBC7",.1],lillet:["#F2E2A0",.2],
+heering:["#6E0F1E",1],grenadine:["#D3142A",1],cassis:["#3B0A33",1],mure:["#4A1040",1],violette:["#8C66C8",1],cacao:["#EADBC4",.2,.3],coffeeliq:["#2A140C",1],
+amaretto:["#A0541C",.8],irishcream:["#D9BD9A",.8,.7],menthe:["#3CCB7A",.9],gchart:["#9BD54A",.9],ychart:["#F2C431",.9],benedictine:["#C48A2A",.8],drambuie:["#C98B25",.8],
+galliano:["#F2C400",.9],fernet:["#1B0F0A",1],elderflower:["#EFE6C0",.2],limoncello:["#F5E23A",.9],schnapps:["#F6C79A",.3],appleliq:["#59D12F",1],pimms:["#B8541E",.8],
+orgeat:["#EDE3CF",.3,.4],sherry:["#E8C86A",.3],port:["#7A1530",.9],prosecco:["#F2E7A0",.15],champagne:["#F2E7A0",.15],stout:["#1A0F08",1],cider:["#C8892A",.8],
+orange:["#F59A1B",1],bloodorange:["#C7351A",1],grapefruitjuice:["#F26B5B",.8],pineapple:["#F5D84A",.8],cranberry:["#B3122E",1],tomato:["#C23B22",1],clamato:["#A83222",1],
+watermelon:["#F0526A",1],passion:["#F2B418",.9],cherryjuice:["#7A1227",1],pomjuice:["#A81530",1],lime:["#E5F0C0",.15],lemon:["#F7EBA6",.15],
+creamcoconut:["#F4EEDC",.5,.8],cream:["#F6F1E4",.6,.8],milk:["#F6F1E4",.6,.8],eggwhite:["#FAF6E8",.2,.3],gingerbeer:["#E7D18A",.3],gingerale:["#EDD98E",.3],lemonade:["#F6EFA6",.3],
+cola:["#3A1C10",1],grapefruitsoda:["#F7A9A0",.4],icedtea:["#9A5A1E",.6],espresso:["#2B170E",1],coffee:["#3A2012",1],strawberry:["#E8344F",.8],mango:["#F6AE1F",.8],banana:["#F3E28A",.5],
+peach:["#F6C28B",.6],demerara:["#B07A38",.5],maple:["#B8741F",.5],honey:["#E0A32F",.4],honeyginger:["#E0A32F",.4],raspsyrup:["#C2185B",1],absinthe:["#CFE8B0",.2],tequila:["#F1EBD4",.04],cucumber:["#D5ECC0",.1]
+};
+function h2r(h){return [parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)]}
+function colFor(name,k){
+  var n=name.toLowerCase();
+  if(k==="wine")return /red/.test(n)?["#6E1030",.9]:["#EFE3A0",.15];
+  if(k==="menthe")return /white/.test(n)?["#F4F4F4",0]:["#3CCB7A",.9];
+  if(k==="cacao")return /white/.test(n)?["#F4EDE0",.1,.3]:["#6B3A22",.7];
+  return COL[k]||null;
+}
+function liquid(x){
+  var vol=0,w=0,r=0,g=0,b=0,milk=0;
+  x.ing.forEach(function(i){
+    var u=i[2]||"oz",amt=u==="oz"?i[1]:(u==="top"?2:0);
+    if(!amt)return;
+    vol+=amt;
+    var c=colFor(i[0],infoKey(i[0]));
+    if(c){var t=c[1],rgb=h2r(c[0]);w+=amt*t;r+=amt*t*rgb[0];g+=amt*t*rgb[1];b+=amt*t*rgb[2];milk+=amt*(c[2]||0)}
+  });
+  if(!vol)vol=1;
+  var col=w>0?[r/w,g/w,b/w]:[190,220,240];
+  var a=w>0?Math.min(.95,.22+.9*Math.min(1,w/vol*1.6)):.3;
+  var m=Math.min(.75,milk/vol*1.6);
+  if(m>0){col=col.map(function(c){return c+(255-c)*m});a=Math.max(a,.55+m*.4)}
+  return {c:"rgb("+Math.round(col[0])+","+Math.round(col[1])+","+Math.round(col[2])+")",a:a};
+}
+var GARN=[[/lime/,"lime"],[/lemon/,"lemon"],[/grapefruit/,"grapefruit"],[/orange/,"orange"],[/cherr/,"cherry"],[/mint|basil/,"mint"],[/olive/,"olive"],[/celery/,"celery"],[/cinnamon/,"cinnamon"],[/pineapple/,"pineapple"],[/strawberr/,"strawberry"],[/berr/,"berry"],[/cucumber/,"cucumber"],[/coffee bean/,"beans"],[/apple/,"apple"]];
+var WHEEL={lime:["#9ACD4A","#4E8F1F"],lemon:["#F7E04B","#D0A91C"],grapefruit:["#F79A9A","#D95C5C"],orange:["#F7A12A","#D9780F"],pineapple:["#F5D84A","#D9B91C"],cucumber:["#CFE8B0","#7DB35A"],apple:["#F2C9A0","#C25A3A"]};
+function garnishKinds(t){
+  var s=t.toLowerCase(),f=[];
+  GARN.forEach(function(g){var p=s.search(g[0]);if(p>=0)f.push([p,g[1]])});
+  f.sort(function(a,b){return a[0]-b[0]});
+  return f.slice(0,2).map(function(a){return a[1]});
+}
+function garnSVG(kind,ax,ay){
+  if(WHEEL[kind]){var c=WHEEL[kind];return '<g transform="translate('+ax+' '+ay+')"><circle r="9" fill="'+c[0]+'" stroke="'+c[1]+'" stroke-width="2"/><path d="M0 0V-7M0 0L6 3.5M0 0L-6 3.5" stroke="#fff" stroke-opacity=".65" stroke-width="1.2"/></g>'}
+  if(kind==="cherry")return '<g transform="translate('+ax+' '+(ay-2)+')"><path d="M0 0Q4 -12 10 -16" stroke="#3E8E2E" stroke-width="1.6" fill="none"/><circle r="5.5" fill="#C8102E"/><circle cx="-1.8" cy="-1.8" r="1.5" fill="#fff" fill-opacity=".6"/></g>';
+  if(kind==="mint")return '<g transform="translate('+ax+' '+(ay-2)+')" fill="#3FA34D"><ellipse rx="4" ry="8" transform="rotate(-35) translate(0 -7)"/><ellipse rx="4" ry="8" transform="translate(0 -9)"/><ellipse rx="4" ry="8" transform="rotate(35) translate(0 -7)"/></g>';
+  if(kind==="olive")return '<g transform="translate('+ax+' '+(ay-2)+')"><path d="M-8 8L9 -12" stroke="#B9B9B9" stroke-width="1.6"/><circle r="5" fill="#8DA13B"/><circle cx="1.5" cy="-1" r="1.7" fill="#C8102E"/></g>';
+  if(kind==="celery")return '<rect x="'+(ax-12)+'" y="'+(ay-30)+'" width="6" height="46" rx="3" fill="#9CCB5A" stroke="#6E9A36" stroke-width="1" transform="rotate(10 '+ax+' '+ay+')"/>';
+  if(kind==="cinnamon")return '<rect x="'+(ax-10)+'" y="'+(ay-26)+'" width="5" height="40" rx="2.5" fill="#8B5A2B" transform="rotate(14 '+ax+' '+ay+')"/>';
+  if(kind==="strawberry")return '<g transform="translate('+ax+' '+(ay-1)+')"><path d="M-7 -3Q0 -9 7 -3Q5 8 0 11Q-5 8 -7 -3Z" fill="#E8344F"/><path d="M-4 -4L0 -8L4 -4" stroke="#3E8E2E" stroke-width="1.6" fill="none"/></g>';
+  if(kind==="berry")return '<g transform="translate('+ax+' '+(ay-2)+')" fill="#5B2A86"><circle r="4" cx="-4"/><circle r="4" cx="4"/><circle r="4" cy="-6"/></g>';
+  if(kind==="beans")return '<g fill="#3B2314"><ellipse cx="'+(ax-7)+'" cy="'+(ay+1)+'" rx="3.4" ry="2.2"/><ellipse cx="'+ax+'" cy="'+(ay-1)+'" rx="3.4" ry="2.2"/><ellipse cx="'+(ax+7)+'" cy="'+(ay+1)+'" rx="3.4" ry="2.2"/></g>';
+  return "";
+}
+var FIZZ={prosecco:1,champagne:1,soda:1,tonic:1,gingerbeer:1,gingerale:1,cola:1,lemonlime:1,grapefruitsoda:1};
+var gid=0;
+function glassSVG(x,w){
+  var g=GL[GK[x.g]]||GL.rocks,gk=GK[x.g]||"rocks",id="gc"+(gid++),L=liquid(x);
+  var bx=g.box,keys=x.keys||[];
+  var s='<svg class="gls" viewBox="0 0 100 120" width="'+w+'" height="'+Math.round(w*1.2)+'" aria-hidden="true" focusable="false"><defs><clipPath id="'+id+'"><path d="'+g.body+'"/></clipPath></defs>';
+  if(gk==="copper")s+='<path d="'+g.body+'" fill="#C77B3B"/>';
+  else if(gk==="julep")s+='<path d="'+g.body+'" fill="#C3CDD5"/>';
+  else s+='<path class="gb" d="'+g.body+'"/>';
+  if(gk!=="copper"&&gk!=="julep"){
+    s+='<g clip-path="url(#'+id+')">';
+    if(gk==="shot"){
+      var ly=x.ing.filter(function(i){return !!colFor(i[0],infoKey(i[0]))||true}),h=(104-g.lvl)/ly.length;
+      ly.forEach(function(i,n){var c=colFor(i[0],infoKey(i[0]));s+='<rect x="0" y="'+(104-h*(n+1)).toFixed(1)+'" width="100" height="'+(h+.6).toFixed(1)+'" fill="'+(c?c[0]:"#ddd")+'"/>'});
+    }else{
+      s+='<rect x="0" y="'+g.lvl+'" width="100" height="'+(120-g.lvl)+'" fill="'+L.c+'" fill-opacity="'+L.a.toFixed(2)+'"/>';
+      if(keys.indexOf("eggwhite")>=0)s+='<rect x="0" y="'+(g.lvl-1)+'" width="100" height="7" fill="#fff" fill-opacity=".92"/>';
+      if(g.ice&&!x.hot){
+        var bw=bx[1]-bx[0],bh=bx[3]-bx[2],sz=Math.min(bw*.42,16);
+        [[.18,.1,12],[.55,.3,-8],[.25,.55,6]].forEach(function(p){s+='<rect class="ice" x="'+(bx[0]+bw*p[0]).toFixed(1)+'" y="'+(bx[2]+bh*p[1]).toFixed(1)+'" width="'+sz.toFixed(1)+'" height="'+sz.toFixed(1)+'" rx="3" transform="rotate('+p[2]+' '+(bx[0]+bw*p[0]+sz/2).toFixed(1)+' '+(bx[2]+bh*p[1]+sz/2).toFixed(1)+')"/>'});
+      }
+      if(keys.some(function(k){return FIZZ[k]})){
+        [[.2,.15],[.62,.3],[.4,.5],[.75,.62],[.3,.8]].forEach(function(p){s+='<circle cx="'+(bx[0]+(bx[1]-bx[0])*p[0]).toFixed(1)+'" cy="'+(bx[2]+(bx[3]-bx[2])*p[1]).toFixed(1)+'" r="1.5" fill="#fff" fill-opacity=".7"/>'});
+      }
+    }
+    s+='</g>';
+  }
+  if(gk==="julep"){var cx=50;[[38,28],[50,24],[62,28],[44,32],[56,32]].forEach(function(p){s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="6" fill="#fff" stroke="#B8C6D0" stroke-width="1"/>'})}
+  s+='<path class="go" d="'+g.body+'"/>';
+  if(g.extra)s+='<path class="go" d="'+g.extra+'"/>';
+  if(gk==="copper")s+='<path d="M30 30V94" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>';
+  var st=x.st.join(" ");
+  if(/\bsalt\b|tajin|sugar the rim|sugar half/i.test(st)&&g.rim)s+='<path d="M'+g.rim[0]+' '+(g.rim[2]-1)+'H'+g.rim[1]+'" stroke="var(--muted)" stroke-width="3.2" stroke-dasharray="1.2 1.8" stroke-opacity=".85"/>';
+  if(x.hot&&g.rim){var mx=(g.rim[0]+g.rim[1])/2,ty=g.rim[2];[-9,0,9].forEach(function(o){s+='<path d="M'+(mx+o)+' '+(ty-4)+'q-4 -6 0 -11t0 -11" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-opacity=".6"/>'})}
+  var gar=garnishKinds(x.gar||"");
+  gar.forEach(function(k,n){
+    if(k==="beans")s+=garnSVG(k,(g.rim[0]+g.rim[1])/2,g.lvl+(gk==="coupe"||gk==="martini"?4:1));
+    else if(g.anc)s+=garnSVG(k,g.anc[0]-(n?20:3),g.anc[1]-(n?4:1));
+  });
+  return s+'</svg>';
+}
+
+
+var VERSION="1.0",NOTES=[
+["1.0","Oct 2026",[
+"186 recipes across 8 base spirits, with an emphasis on easy drinks and margarita variations.",
+"Pick a base spirit, or filter by taste (sweet, sour, bitter, savory), style (hot, long, short, spirit-forward) and difficulty.",
+"Single Sweet / Any / Sour toggle, plus search by drink or ingredient.",
+"Sugar-free filter with zero-sugar swap suggestions.",
+"Tap any ingredient for what it is, substitutes, and a button to find more drinks that use it.",
+"Change the primary spirit amount (type it or use + / -) and the whole recipe scales. Also 1x / 2x / 4x presets and oz / ml units.",
+"Optional ingredients can be switched off (for example agave in the Aperol Margarita).",
+"Save favorites with the heart, or tap Surprise me for a random pick.",
+"Drawn glass for every drink: the right glass shape, a liquid color matched to the ingredients, plus ice, foam, bubbles, salt rim and garnish.",
+"Works on phones with light and dark themes."
+]]];
+function rnHtml(){
+  var h='<div class="band" data-b="Tequila"><div><h2 id="rn-t">Release notes</h2><div class="sub">Current version '+VERSION+'</div></div><div class="band-r"><button class="x" id="rnx" type="button" aria-label="Close release notes">&times;</button></div></div><div class="sb">';
+  NOTES.forEach(function(n){h+='<div class="sec"><p class="rn-h">Version '+n[0]+' <span class="meta">'+n[1]+(n[0]==="1.0"?' | first release':'')+'</span></p><ul class="rn">'+n[2].map(function(t){return '<li>'+t+'</li>'}).join("")+'</ul></div>'});
+  return h+'</div>';
+}
+function rnOpen(o){
+  var ov=$("rnov");
+  if(o){$("rnsheet").innerHTML=rnHtml();ov.hidden=false;document.body.style.overflow="hidden";$("rnx").focus()}
+  else{ov.hidden=true;if($("ov").hidden)document.body.style.overflow="";$("ver").focus()}
+}
+$("ver").addEventListener("click",function(){rnOpen(true)});
+$("rnov").addEventListener("click",function(e){if(e.target===$("rnov")||e.target.id==="rnx")rnOpen(false)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("rnov").hidden){e.stopPropagation();rnOpen(false)}},true);
 function frac(x){
   var r=Math.round(x*8)/8,w=Math.floor(r),f=r-w;
   var m={0:"",0.125:"1/8",0.25:"1/4",0.375:"3/8",0.5:"1/2",0.625:"5/8",0.75:"3/4",0.875:"7/8"};
@@ -710,6 +871,22 @@ function tasteLine(x){
   if(!p.length)return "dry";
   return p.map(function(a){return a[0]>=3?"very "+a[1]:a[0]===2?a[1]:"a touch of "+a[1]}).join(", ");
 }
+var SPIRIT=/tequila|mezcal|vodka|\bgin\b|bourbon|rye|whiskey|scotch|\brum\b|rhum|cachaca|cognac|brandy|pisco|applejack|campari|aperol|prosecco|champagne|sparkling wine|wine|sherry|vermouth|\bport\b|pimm|lillet|amaretto|irish cream|limoncello|stout/;
+function primaryIdx(x){
+  var best=-1,n,m=-1;
+  if(x.b==="Non-alcoholic"){x.ing.forEach(function(i,k){if((i[2]||"oz")==="oz"&&i[1]>m){m=i[1];best=k}});return best}
+  for(n=0;n<x.ing.length;n++)if((x.ing[n][2]||"oz")==="oz"&&SPIRIT.test(x.ing[n][0].toLowerCase()))return n;
+  for(n=0;n<x.ing.length;n++)if((x.ing[n][2]||"oz")==="oz")return n;
+  return -1;
+}
+function fmtNum(v){return unit==="oz"?String(parseFloat(v.toFixed(2))):String(Math.round(v))}
+function fmtScale(v){return String(parseFloat(v.toFixed(2)))}
+var optOff={};
+function updateQty(){
+  cur.ing.forEach(function(i,n){var el=$("q"+n);if(el)el.textContent=qty(i)});
+  var sc=$("scv");if(sc)sc.textContent=fmtScale(serv)+"x";
+  document.querySelectorAll("[data-sc]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.sc===serv))});
+}
 function ingDetail(k){
   var inf=INFO[k],c=keyCount[k]||1;
   return '<div class="ing-d"><div class="ing-t">'+inf[0]+'</div><p>'+inf[1]+'</p><div class="sec-h">Substitutes</div>'
@@ -721,15 +898,20 @@ function sheetHtml(x){
   var h='<div class="band" data-b="'+x.b+'"><div><h2 id="sh-name">'+x.n+'</h2><div class="sub">'+x.b+' | '+x.g+' | '+METHOD[x.m]+'</div></div>'
    +'<div class="band-r"><div class="band-b"><button class="x" id="sfav" type="button" aria-pressed="'+f+'" aria-label="Save this drink">'+(f?"&#9829;":"&#9825;")+'</button><button class="x" id="close" type="button" aria-label="Close recipe">&times;</button></div>'
    +'<div class="rec">'+DIFF[x.d]+'<span>'+x.min+' min</span></div></div></div>';
-  h+='<div class="sb" data-b="'+x.b+'">';
-  h+='<div class="sec"><div class="sec-t"><div class="sec-h">Ingredients</div><div class="mini">'
-   +'<div class="srv"><button class="step-b" type="button" id="dn" aria-label="Fewer servings">-</button><output id="sv" aria-live="polite">'+serv+'x</output><button class="step-b" type="button" id="up" aria-label="More servings">+</button></div>'
+  h+='<div class="sb" data-b="'+x.b+'"><div class="art">'+glassSVG(x,120)+'</div>';
+  h+='<div class="sec"><div class="sec-t"><div class="sec-h">Ingredients<span class="sc" id="scv">'+fmtScale(serv)+'x</span></div><div class="mini">'
+   +'<div class="seg" role="group" aria-label="Scale"><button type="button" id="sc1" data-sc="1" aria-pressed="'+(serv===1)+'">1x</button><button type="button" id="sc2" data-sc="2" aria-pressed="'+(serv===2)+'">2x</button><button type="button" id="sc4" data-sc="4" aria-pressed="'+(serv===4)+'">4x</button></div>'
    +'<div class="seg" role="group" aria-label="Units"><button type="button" data-u="oz" aria-pressed="'+(unit==="oz")+'">oz</button><button type="button" data-u="ml" aria-pressed="'+(unit==="ml")+'">ml</button></div></div></div>';
   h+='<ul class="ings">';
+  var pi=primaryIdx(x);
   x.ing.forEach(function(i,n){
     var k=infoKey(i[0]),inf=k?INFO[k]:null,open=!!inf&&openIng===n;
     var nm=inf?'<button class="ing-b" id="ib'+n+'" type="button" data-n="'+n+'" aria-expanded="'+open+'">'+i[0]+'</button>':i[0];
-    h+='<li><b>'+qty(i)+'</b><span>'+nm+'</span>'+(open?ingDetail(k):'')+'</li>';
+    var q;
+    if(n===pi){q='<input class="pq" id="pq" type="number" inputmode="decimal" step="any" min="0" value="'+fmtNum(i[1]*(unit==="oz"?1:30)*serv)+'" aria-label="Amount of '+i[0]+'"><span class="pqu">'+unit+'</span>'}
+    else q='<b id="q'+n+'">'+qty(i)+'</b>';
+    var op=i[3]===1?'<label class="opt"><input type="checkbox" id="o'+n+'" data-n="'+n+'"'+(optOff[n]?'':' checked')+'> Include (optional)</label>':'';
+    h+='<li'+(optOff[n]?' class="off"':'')+'>'+(n===pi?'<div>'+q+'</div>':q)+'<span>'+nm+op+(n===pi?'<span class="pstep"><button type="button" id="pm" aria-label="Decrease amount">-</button><button type="button" id="pp" aria-label="Increase amount">+</button></span>':'')+'</span>'+(open?ingDetail(k):'')+'</li>';
   });
   h+='</ul></div>';
   h+='<div class="sec"><div class="sec-h">Method</div><ol class="steps">';
@@ -744,7 +926,7 @@ function paint(focusId){
   var el=$(focusId||"close");if(el)el.focus();
 }
 function openSheet(i,from){
-  cur=D[i];lastTile=from;serv=1;openIng=-1;
+  cur=D[i];lastTile=from;serv=1;openIng=-1;optOff={};
   $("ov").hidden=false;document.body.style.overflow="hidden";
   paint();
 }
@@ -755,8 +937,13 @@ function closeSheet(){
 $("ov").addEventListener("click",function(e){
   if(e.target===$("ov")||e.target.closest("#close")){closeSheet();return}
   var b,fid=null;
-  if(e.target.closest("#up")){serv=Math.min(8,serv+1);fid="up"}
-  else if(e.target.closest("#dn")){serv=Math.max(1,serv-1);fid="dn"}
+  if((b=e.target.closest("#pp,#pm"))){
+    var pi2=primaryIdx(cur),bs=cur.ing[pi2][1]*(unit==="oz"?1:30),st=unit==="oz"?0.5:15;
+    var nv=Math.max(st,Math.round((bs*serv+(b.id==="pp"?st:-st))*100)/100);
+    serv=Math.min(nv/bs,50);$("pq").value=fmtNum(bs*serv);updateQty();return;
+  }
+  if((b=e.target.closest("[data-sc]"))){serv=+b.dataset.sc;fid="sc"+b.dataset.sc}
+  else if((b=e.target.closest(".opt input"))){var on=+b.dataset.n;optOff[on]=!b.checked;fid="o"+on}
   else if((b=e.target.closest("[data-u]"))){unit=b.dataset.u;try{localStorage.setItem("cp-unit",unit)}catch(err){}}
   else if(e.target.closest("#sfav")){toggleFav(cur);fid="sfav";render()}
   else if((b=e.target.closest(".ing-b"))){var n=+b.dataset.n;openIng=(openIng===n)?-1:n;fid="ib"+n}
@@ -764,9 +951,19 @@ $("ov").addEventListener("click",function(e){
   else return;
   paint(fid||"close");
 });
+$("ov").addEventListener("input",function(e){
+  if(e.target.id!=="pq")return;
+  var v=parseFloat(e.target.value),pi=primaryIdx(cur);
+  if(!(v>0)||!isFinite(v)||pi<0)return;
+  serv=Math.min(v/(cur.ing[pi][1]*(unit==="oz"?1:30)),50);
+  updateQty();
+});
+$("ov").addEventListener("change",function(e){
+  if(e.target.id!=="pq")return;
+  var pi=primaryIdx(cur);
+  e.target.value=fmtNum(cur.ing[pi][1]*(unit==="oz"?1:30)*serv);
+});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("ov").hidden)closeSheet()});
 render();
 </script>
-
-</body>
-</html>
+</body></html>
