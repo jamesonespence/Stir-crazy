@@ -158,14 +158,26 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 .gls .ice{fill:#fff;fill-opacity:.38;stroke:#fff;stroke-opacity:.6;stroke-width:1}
 .open .gls{position:absolute;right:8px;bottom:8px;pointer-events:none}
 .art{display:flex;justify-content:center;padding:6px 0 2px;background:var(--bg);border-radius:8px}
-.ver{font:inherit;font-size:12px;font-weight:600;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin-left:8px;cursor:pointer;vertical-align:middle}
-.rn{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px}
-.rn-h{font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase;margin:0}
+.verbar{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.linkbtn{font:inherit;font-size:12px;color:var(--muted);background:none;border:0;padding:4px 0;text-decoration:underline;cursor:pointer}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.notes h3{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+.notes h4{margin:12px 0 2px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em}
+.notes ul{margin:2px 0 0;padding-left:18px;color:var(--ink);font-size:14px}
+.credit{margin:28px 0 12px;padding:0 0 6px;text-align:center;color:var(--muted)}
+.credit .cr-rule{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--whiskey-num),var(--gin-num));opacity:.85;margin:0 auto 18px;max-width:320px}
+.credit .cr-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.04em;color:var(--ink);box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--line)}
+.credit .cr-by{margin-top:12px;font-size:11px;letter-spacing:.28em;text-transform:uppercase}
+.credit .cr-name{margin-top:2px;font-family:var(--display);font-weight:800;font-size:30px;line-height:1.1;letter-spacing:.07em;text-transform:uppercase;color:var(--ink)}
+.credit .cr-date{margin-top:6px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
+.credit .cr-date:before,.credit .cr-date:after{content:"";width:34px;height:1px;background:var(--line)}
 </style></head><body>
 
 <div class="app">
+  <div class="verbar"><span id="vtxt"></span><button type="button" id="relbtn" class="linkbtn" aria-expanded="false">Release notes</button></div>
+  <section id="notes" class="panel notes" hidden></section>
   <header class="hd">
-    <h1>Stir Crazy<button class="ver" id="ver" type="button" aria-label="Version and release notes">v1.0</button></h1>
+    <h1>Stir Crazy</h1>
     <div class="meta" id="meta"></div>
   </header>
 
@@ -192,14 +204,18 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
   </section>
 
   <section class="grid" id="grid" aria-label="Matching drinks"></section>
+
+  <footer class="credit" aria-label="Credit">
+    <div class="cr-rule"></div>
+    <div class="cr-mark">JS</div>
+    <div class="cr-by">Designed and built by</div>
+    <div class="cr-name">Jameson Spence</div>
+    <div class="cr-date">October 2026</div>
+  </footer>
 </div>
 
 <div class="ov" id="ov" hidden>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-name"></div>
-</div>
-
-<div class="ov" id="rnov" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rn-t" id="rnsheet"></div>
 </div>
 
 <script>
@@ -822,8 +838,9 @@ function glassSVG(x,w){
 }
 
 
-var VERSION="1.0",NOTES=[
-["1.0","Oct 2026",[
+var VERSION="1.1",NOTES=[
+["1.1",["Credit footer added at the bottom (Designed and built by Jameson Spence).","Version number and release notes moved to the top bar, same layout as GameScore."]],
+["1.0",[
 "186 recipes across 8 base spirits, with an emphasis on easy drinks and margarita variations.",
 "Pick a base spirit, or filter by taste (sweet, sour, bitter, savory), style (hot, long, short, spirit-forward) and difficulty.",
 "Single Sweet / Any / Sour toggle, plus search by drink or ingredient.",
@@ -835,19 +852,9 @@ var VERSION="1.0",NOTES=[
 "Drawn glass for every drink: the right glass shape, a liquid color matched to the ingredients, plus ice, foam, bubbles, salt rim and garnish.",
 "Works on phones with light and dark themes."
 ]]];
-function rnHtml(){
-  var h='<div class="band" data-b="Tequila"><div><h2 id="rn-t">Release notes</h2><div class="sub">Current version '+VERSION+'</div></div><div class="band-r"><button class="x" id="rnx" type="button" aria-label="Close release notes">&times;</button></div></div><div class="sb">';
-  NOTES.forEach(function(n){h+='<div class="sec"><p class="rn-h">Version '+n[0]+' <span class="meta">'+n[1]+(n[0]==="1.0"?' | first release':'')+'</span></p><ul class="rn">'+n[2].map(function(t){return '<li>'+t+'</li>'}).join("")+'</ul></div>'});
-  return h+'</div>';
-}
-function rnOpen(o){
-  var ov=$("rnov");
-  if(o){$("rnsheet").innerHTML=rnHtml();ov.hidden=false;document.body.style.overflow="hidden";$("rnx").focus()}
-  else{ov.hidden=true;if($("ov").hidden)document.body.style.overflow="";$("ver").focus()}
-}
-$("ver").addEventListener("click",function(){rnOpen(true)});
-$("rnov").addEventListener("click",function(e){if(e.target===$("rnov")||e.target.id==="rnx")rnOpen(false)});
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("rnov").hidden){e.stopPropagation();rnOpen(false)}},true);
+$("vtxt").textContent="Stir Crazy v"+VERSION;
+$("notes").innerHTML="<h3>Release notes</h3>"+NOTES.map(function(n){return "<h4>v"+n[0]+"</h4><ul>"+n[1].map(function(t){return "<li>"+t+"</li>"}).join("")+"</ul>"}).join("");
+$("relbtn").addEventListener("click",function(){var o=$("notes").hidden;$("notes").hidden=!o;this.setAttribute("aria-expanded",o)});
 function frac(x){
   var r=Math.round(x*8)/8,w=Math.floor(r),f=r-w;
   var m={0:"",0.125:"1/8",0.25:"1/4",0.375:"3/8",0.5:"1/2",0.625:"5/8",0.75:"3/4",0.875:"7/8"};
