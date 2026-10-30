@@ -164,6 +164,9 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 .notes h3{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
 .notes h4{margin:12px 0 2px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em}
 .notes ul{margin:2px 0 0;padding-left:18px;color:var(--ink);font-size:14px}
+.rq{display:grid;gap:4px;margin:10px 0}
+.rq label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rq input,.rq textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;width:100%}
 .credit{margin:28px 0 12px;padding:0 0 6px;text-align:center;color:var(--muted)}
 .credit .cr-rule{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--whiskey-num),var(--gin-num));opacity:.85;margin:0 auto 18px;max-width:320px}
 .credit .cr-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.04em;color:var(--ink);box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--line)}
@@ -174,7 +177,15 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 </style></head><body>
 
 <div class="app">
-  <div class="verbar"><span id="vtxt"></span><button type="button" id="relbtn" class="linkbtn" aria-expanded="false">Release notes</button></div>
+  <div class="verbar"><span id="vtxt"></span><span><button type="button" id="reqbtn" class="linkbtn" aria-expanded="false">Request a drink</button> <button type="button" id="relbtn" class="linkbtn" aria-expanded="false">Release notes</button></span></div>
+  <section id="req" class="panel notes" hidden>
+    <h3>Request a drink</h3>
+    <p class="meta">Tell me what to add. This opens an email to me with your request filled in. Press send in your email app to finish.</p>
+    <div class="rq"><label for="rq-n">Drink name</label><input id="rq-n" type="text" autocomplete="off"></div>
+    <div class="rq"><label for="rq-r">Recipe or notes (optional)</label><textarea id="rq-r" rows="3"></textarea></div>
+    <div class="rq"><label for="rq-w">Your name (optional)</label><input id="rq-w" type="text" autocomplete="name"></div>
+    <button type="button" class="btn pri" id="rq-s">Send request</button>
+  </section>
   <section id="notes" class="panel notes" hidden></section>
   <header class="hd">
     <h1>Stir Crazy</h1>
@@ -244,6 +255,24 @@ var D=[
 {n:"Espresso Martini",b:"Vodka",d:2,min:5,g:"Coupe",m:"shake",long:0,tx:[2,0,1],ing:[["Vodka",2],["Coffee liqueur",1],["Fresh espresso",1],["Simple syrup",0.25]],st:["Brew the espresso and let it cool for a minute.","Shake everything hard with ice for 15 seconds.","Double strain into a chilled coupe."],gar:"Three coffee beans"},
 {n:"White Russian",b:"Vodka",d:1,min:2,g:"Rocks",m:"build",long:0,tx:[3,0,1],ing:[["Vodka",2],["Coffee liqueur",1],["Heavy cream",1]],st:["Add ice to a rocks glass.","Pour in the vodka and coffee liqueur.","Float the cream on top and stir lightly."],gar:"None"},
 {n:"Margarita",b:"Tequila",d:1,min:4,g:"Rocks",m:"shake",long:0,tx:[1,3,0],ing:[["Blanco tequila",2],["Cointreau",1],["Lime juice",1]],st:["Rub a lime wedge on half the rim and dip it in salt.","Shake everything with ice for 12 seconds.","Strain over fresh ice."],gar:"Lime wheel"},
+{n:"Lime Margarita",b:"Tequila",d:1,min:3,g:"Rocks",m:"shake",long:0,tx:[1,3,0],ing:[["Blanco tequila",1],["Lime juice",1],["Triple sec",0.75],["Agave syrup",0.25],["Salt",1,"pinch"]],st:["Add everything to a shaker, including a pinch of salt, and shake with ice for 12 seconds.","Strain over fresh ice.","Make the syrup with 2 parts agave to 1 part warm water."],gar:"Lime wheel"},
+{n:"Jasmine",b:"Gin",d:2,min:3,g:"Coupe",m:"shake",long:0,tx:[1,2,1],ing:[["Gin",1.5],["Lemon juice",0.75],["Cointreau",0.5],["Campari",0.25]],st:["Shake everything with ice for 12 seconds.","Double strain into a chilled coupe."],gar:"Lemon twist"},
+{n:"White Negroni",b:"Gin",d:1,min:3,g:"Rocks",m:"stir",long:0,tx:[1,0,3],ing:[["Gin",1.5],["Lillet Blanc",1],["Suze",1]],st:["Stir everything with ice for 20 seconds.","Strain over one large ice cube."],gar:"Lemon peel"},
+{n:"Bijou",b:"Gin",d:2,min:4,g:"Coupe",m:"stir",long:0,tx:[2,0,2],ing:[["Gin",1],["Green Chartreuse",1],["Sweet vermouth",1],["Orange bitters",1,"dash"]],st:["Stir everything with ice for 30 seconds.","Strain into a chilled coupe."],gar:"Lemon peel and a cherry"},
+{n:"50/50 Martini",b:"Gin",d:1,min:3,g:"Martini",m:"stir",long:0,tx:[0,0,2],ing:[["Gin",1.5],["Dry vermouth",1.5],["Orange bitters",2,"dash"]],st:["Stir everything with ice for 30 seconds.","Strain into a chilled martini glass."],gar:"Lemon twist"},
+{n:"Bamboo",b:"Liqueur & wine",d:1,min:3,g:"Coupe",m:"stir",long:0,tx:[0,0,1],ing:[["Dry sherry",1.5],["Dry vermouth",1.5],["Orange bitters",1,"dash"],["Angostura bitters",1,"dash"]],st:["Stir everything with ice for 20 seconds.","Strain into a chilled coupe."],gar:"Lemon twist"},
+{n:"El Presidente",b:"Rum",d:2,min:4,g:"Coupe",m:"stir",long:0,tx:[1,0,1],ing:[["Aged rum",1.5],["Dry vermouth",1],["Orange curacao",0.25],["Grenadine",0.25]],st:["Stir everything with ice for 25 seconds.","Strain into a chilled coupe."],gar:"Orange peel"},
+{n:"Toronto",b:"Whiskey",d:1,min:3,g:"Coupe",m:"stir",long:0,tx:[1,0,3],ing:[["Rye whiskey",2],["Fernet-Branca",0.25],["Simple syrup",0.25],["Angostura bitters",2,"dash"]],st:["Stir everything with ice for 30 seconds.","Strain into a chilled coupe."],gar:"Orange peel"},
+{n:"Monte Carlo",b:"Whiskey",d:1,min:3,g:"Coupe",m:"stir",long:0,tx:[2,0,2],ing:[["Rye whiskey",2],["Benedictine",0.5],["Angostura bitters",2,"dash"]],st:["Stir everything with ice for 30 seconds.","Strain into a chilled coupe."],gar:"Lemon peel"},
+{n:"Reposado Old Fashioned",b:"Tequila",d:1,min:3,g:"Rocks",m:"stir",long:0,tx:[1,0,2],ing:[["Reposado tequila",2],["Agave syrup",0.25],["Angostura bitters",2,"dash"]],st:["Stir everything with ice for 25 seconds.","Strain over one large ice cube."],gar:"Orange peel"},
+{n:"Death in the Afternoon",b:"Liqueur & wine",d:1,min:2,g:"Flute",m:"build",long:0,tx:[1,0,2],ing:[["Absinthe",1],["Champagne",4]],st:["Pour the absinthe into a chilled flute.","Slowly top with cold champagne."],gar:"None"},
+{n:"White Sangria",b:"Liqueur & wine",d:1,min:5,g:"Wine glass",m:"build",long:1,tx:[2,1,0],ing:[["Dry white wine",5],["Elderflower liqueur",0.5],["Simple syrup",0.25],["Peach slices",3,"pc"],["Diced green apple",2,"pc"],["Mint leaves",3,"pc"],["Prosecco",1]],st:["Combine everything except the Prosecco in a pitcher. Amounts are for one glass. Scale 5x for a 750 ml bottle.","Chill for at least 4 hours.","Serve over ice and top with Prosecco."],gar:"Peach slice and mint"},
+{n:"Rose Sangria",b:"Liqueur & wine",d:1,min:5,g:"Wine glass",m:"build",long:1,tx:[2,1,0],ing:[["Dry rose wine",5],["Vodka",0.25],["Simple syrup",0.25],["Strawberries",2,"pc"],["Raspberries",3,"pc"],["Basil leaves",2,"pc"],["Soda water",1]],st:["Combine everything except the soda in a pitcher. Amounts are for one glass. Scale 5x for a 750 ml bottle.","Chill for 3 to 4 hours.","Serve over ice and top with soda."],gar:"Strawberry and basil"},
+{n:"Sparkling Red Sangria",b:"Liqueur & wine",d:1,min:5,g:"Wine glass",m:"build",long:1,tx:[2,1,0],ing:[["Dry red wine",4],["Orange liqueur",0.375],["Apple juice",0.375],["Orange slices",2,"pc"],["Apple slices",2,"pc"],["Prosecco",2]],st:["Combine the wine, liqueur, juice and fruit in a pitcher. Scale 6x for a 750 ml bottle.","Chill for at least 1 hour, ideally 4. Do not add the bubbles yet.","Pour over ice and top with Prosecco."],gar:"Orange slice"},
+{n:"Tropical Sangria",b:"Liqueur & wine",d:1,min:5,g:"Wine glass",m:"build",long:1,tx:[3,1,0],ing:[["Dry white wine",5],["Coconut rum",0.5],["Pineapple juice",0.5],["Mango chunks",3,"pc"],["Pineapple chunks",2,"pc"],["Kiwi slices",2,"pc"],["Ginger ale",1]],st:["Combine everything except the ginger ale in a pitcher. Amounts are for one glass. Scale 5x for a 750 ml bottle.","Chill for at least 4 hours.","Serve over ice and top with ginger ale."],gar:"Pineapple wedge"},
+{n:"Apple Cinnamon Sangria",b:"Liqueur & wine",d:1,min:5,g:"Wine glass",m:"build",long:1,tx:[2,1,0],ing:[["Dry red wine",5],["Calvados",0.5],["Apple slices",3,"pc"],["Pear slices",2,"pc"],["Cinnamon stick",1,"pc"],["Whole cloves",1,"pc"],["Apple cider",1]],st:["Combine everything except the cider in a pitcher. Amounts are for one glass. Scale 5x for a 750 ml bottle.","Chill overnight if you can, at least 4 hours.","Serve over ice and top with apple cider."],gar:"Apple slice and a cinnamon stick"},
+{n:"Berry Herb Sangria",b:"Liqueur & wine",d:1,min:5,g:"Wine glass",m:"build",long:1,tx:[2,1,0],ing:[["Dry rose wine",5],["Raspberry liqueur",0.5],["Strawberries",2,"pc"],["Blueberries",4,"pc"],["Blackberries",2,"pc"],["Thyme sprig",1,"pc"],["Soda water",1]],st:["Combine everything except the soda in a pitcher. Amounts are for one glass. Scale 5x for a 750 ml bottle.","Chill for at least 3 hours.","Serve cold over ice and top with soda."],gar:"Mixed berries and thyme"},
+{n:"Winter Sangria",b:"Liqueur & wine",d:1,min:15,g:"Mug",m:"build",long:1,hot:1,tx:[2,0,0],ing:[["Dry red wine",5],["Honey",0.375],["Orange slices",2,"pc"],["Star anise",1,"pc"],["Cinnamon stick",1,"pc"],["Whole cloves",2,"pc"]],st:["Combine everything in a small pot.","Warm gently for 10 minutes. Never boil, it burns off the alcohol and turns the wine bitter.","Strain into a mug."],gar:"Orange slice and star anise"},
 {n:"Tommy's Margarita",b:"Tequila",d:1,min:3,g:"Rocks",m:"shake",long:0,tx:[1,3,0],ing:[["Blanco tequila",2],["Lime juice",1],["Agave syrup",0.5]],st:["Shake everything with ice for 12 seconds.","Strain over fresh ice.","Make the syrup with 2 parts agave to 1 part warm water."],gar:"Lime wheel"},
 {n:"Paloma",b:"Tequila",d:1,min:3,g:"Highball",m:"build",long:1,tx:[1,2,1],ing:[["Blanco tequila",2],["Lime juice",0.5],["Grapefruit soda",4]],st:["Salt half the rim of a highball.","Fill with ice, then add the tequila and lime.","Top with grapefruit soda."],gar:"Grapefruit wedge"},
 {n:"Oaxaca Old Fashioned",b:"Tequila",d:2,min:4,g:"Rocks",m:"stir",long:0,tx:[1,0,2],ing:[["Reposado tequila",1.5],["Mezcal",0.5],["Agave syrup",0.25],["Angostura bitters",2,"dash"]],st:["Add everything to a mixing glass with ice.","Stir for 25 seconds.","Strain over a large ice cube."],gar:"Flamed orange peel"},
@@ -527,7 +556,7 @@ function render(){
       +'<button class="fav" type="button" data-i="'+i+'" aria-pressed="'+f+'" aria-label="Save '+x.n+'">'+(f?"&#9829;":"&#9825;")+'</button></div>';
   });
   if(!res.length){
-    h='<div class="empty">'+(F.b==="__fav"&&!fav.length&&!act.length&&!F.q?"No saved drinks yet. Tap the heart on any drink to keep it here.":"No drink matches all of those. Try clearing a filter.")+'</div>';
+    h='<div class="empty">'+(F.b==="__fav"&&!fav.length&&!act.length&&!F.q?"No saved drinks yet. Tap the heart on any drink to keep it here.":"No drink matches all of those. Try clearing a filter.")+(F.q?' <button type="button" class="linkbtn" data-req="'+F.q.replace(/[&<>"]/g,"")+'">Request "'+F.q.replace(/[&<>"]/g,"")+'"</button>':"")+'</div>';
   }
   $("grid").innerHTML=h;
 }
@@ -673,6 +702,7 @@ worcester:["Worcestershire sauce","Fermented savory sauce made with anchovy and 
 celerysalt:["Celery salt and pepper","Savory seasoning for the rim or the drink.",["Regular salt plus ground celery seed","Old Bay for a twist"],"celery"],
 olivebrine:["Olive brine","Liquid from a jar of green olives. Salty and savory.",["Pickled onion or caper brine"],"olive brine"],
 jalapeno:["Jalapeno","Fresh and green with medium heat. Remove the seeds for less heat.",["Serrano pepper, which is hotter","A few drops of hot sauce"],"jalapeno"],
+salt:["Salt","A pinch lifts citrus and tames bitterness. Use fine sea salt or kosher salt.",["Saline solution (4 parts water to 1 part salt), 2 drops","A pinch of Tajin"],"salt"],
 basil:["Basil","Fresh leaves, pressed gently to release the oils.",["Thai basil","Mint"],"basil"],
 mint:["Mint","Spearmint is the standard. Press, do not shred.",["Basil","Mint syrup, with less sweetener elsewhere"],"mint"],
 cucumber:["Cucumber","English cucumber is best, since it has thin skin and few seeds.",["Peeled regular cucumber","Cucumber juice or cucumber water"],"cucumber"],
@@ -688,20 +718,21 @@ limewedge:["Lime","Cut wedges or limes cut into eighths for muddling. Press the 
 orangeslice:["Orange slice","A whole slice, often studded or floated.",["A strip of orange peel"],"orange slice"]
 };
 var MATCH=[
+[/^(apple|pear|peach) slices$|^diced green apple$|^(mango|pineapple) chunks$|^kiwi slices$|^(blueberries|blackberries|raspberries)$/,"sangriafruit"],
 [/mezcal/,"mezcal"],[/tequila/,"tequila"],[/citrus vodka|vanilla vodka|^vodka$/,"vodka"],[/old tom|^gin$/,"gin"],
 [/islay/,"islay"],[/blended scotch/,"scotch"],[/irish whiskey/,"irishwhiskey"],[/rye whiskey/,"rye"],[/^bourbon/,"bourbon"],[/^whiskey$/,"whiskey"],
 [/rhum agricole/,"agricole"],[/cachaca/,"cachaca"],[/coconut rum/,"coconutrum"],[/aged jamaican|aged rum/,"agedrum"],[/dark rum/,"darkrum"],[/white rum|light rum|^rum$/,"whiterum"],
-[/cognac/,"cognac"],[/^brandy$/,"brandy"],[/pisco/,"pisco"],[/applejack/,"applejack"],
-[/cointreau/,"cointreau"],[/orange curacao/,"curacao"],[/grand marnier/,"grandmarnier"],[/coffee liqueur/,"coffeeliq"],[/amaretto/,"amaretto"],
+[/cognac/,"cognac"],[/^brandy$/,"brandy"],[/pisco/,"pisco"],[/applejack|calvados/,"applejack"],
+[/cointreau|triple sec|^orange liqueur/,"cointreau"],[/orange curacao/,"curacao"],[/grand marnier/,"grandmarnier"],[/coffee liqueur/,"coffeeliq"],[/amaretto/,"amaretto"],
 [/campari/,"campari"],[/aperol/,"aperol"],[/amaro nonino/,"nonino"],[/maraschino/,"maraschino"],[/cherry heering/,"heering"],
 [/green chartreuse/,"gchart"],[/yellow chartreuse/,"ychart"],[/benedictine/,"benedictine"],[/drambuie/,"drambuie"],[/galliano/,"galliano"],[/fernet/,"fernet"],
 [/elderflower liqueur/,"elderflower"],[/creme de cassis/,"cassis"],[/creme de mure/,"mure"],[/creme de violette/,"violette"],[/creme de cacao/,"cacao"],[/creme de menthe/,"menthe"],
 [/irish cream/,"irishcream"],[/limoncello/,"limoncello"],[/peach schnapps/,"schnapps"],[/sour apple liqueur/,"appleliq"],[/pimm/,"pimms"],[/lillet/,"lillet"],
-[/sweet vermouth/,"sweetvermouth"],[/dry vermouth/,"dryvermouth"],[/fino sherry/,"sherry"],[/\bport\b/,"port"],
-[/dry red wine|dry white wine|^white wine$/,"wine"],[/prosecco/,"prosecco"],[/champagne/,"champagne"],[/stout/,"stout"],[/apple cider/,"cider"],
+[/sweet vermouth/,"sweetvermouth"],[/dry vermouth/,"dryvermouth"],[/fino sherry|dry sherry/,"sherry"],[/\bport\b/,"port"],
+[/dry red wine|dry white wine|dry rose wine|^white wine$/,"wine"],[/prosecco/,"prosecco"],[/champagne/,"champagne"],[/stout/,"stout"],[/apple cider/,"cider"],
 [/angostura/,"angostura"],[/peychaud/,"peychaud"],[/orange bitters/,"orangebitters"],[/absinthe/,"absinthe"],[/orgeat/,"orgeat"],[/orange flower water/,"ofw"],[/grenadine/,"grenadine"],
 [/honey-ginger/,"honeyginger"],[/ginger syrup/,"gingersyrup"],[/raspberry syrup/,"raspsyrup"],[/vanilla syrup/,"vanillasyrup"],[/demerara/,"demerara"],[/maple/,"maple"],
-[/agave/,"agave"],[/honey/,"honey"],[/simple syrup/,"simple"],[/sugar/,"sugar"],
+[/^salt$/,"salt"],[/agave/,"agave"],[/honey/,"honey"],[/simple syrup/,"simple"],[/sugar/,"sugar"],
 [/lime juice/,"lime"],[/lemon juice/,"lemon"],[/blood orange/,"bloodorange"],[/orange juice/,"orange"],[/grapefruit juice/,"grapefruitjuice"],[/pineapple juice/,"pineapple"],
 [/cranberry/,"cranberry"],[/tomato juice/,"tomato"],[/clamato/,"clamato"],[/watermelon/,"watermelon"],[/passion fruit/,"passion"],[/cherry juice/,"cherryjuice"],[/pomegranate juice/,"pomjuice"],
 [/cream of coconut/,"creamcoconut"],[/lightly whipped cream/,"whipped"],[/heavy cream/,"cream"],[/whole milk/,"milk"],[/egg white/,"eggwhite"],
@@ -827,7 +858,7 @@ function glassSVG(x,w){
   if(g.extra)s+='<path class="go" d="'+g.extra+'"/>';
   if(gk==="copper")s+='<path d="M30 30V94" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>';
   var st=x.st.join(" ");
-  if(/\bsalt\b|tajin|sugar the rim|sugar half/i.test(st)&&g.rim)s+='<path d="M'+g.rim[0]+' '+(g.rim[2]-1)+'H'+g.rim[1]+'" stroke="var(--muted)" stroke-width="3.2" stroke-dasharray="1.2 1.8" stroke-opacity=".85"/>';
+  if(/rim[^.]*\bsalt\b|\bsalt\b[^.]*rim|tajin|sugar the rim|sugar half/i.test(st)&&g.rim)s+='<path d="M'+g.rim[0]+' '+(g.rim[2]-1)+'H'+g.rim[1]+'" stroke="var(--muted)" stroke-width="3.2" stroke-dasharray="1.2 1.8" stroke-opacity=".85"/>';
   if(x.hot&&g.rim){var mx=(g.rim[0]+g.rim[1])/2,ty=g.rim[2];[-9,0,9].forEach(function(o){s+='<path d="M'+(mx+o)+' '+(ty-4)+'q-4 -6 0 -11t0 -11" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-opacity=".6"/>'})}
   var gar=garnishKinds(x.gar||"");
   gar.forEach(function(k,n){
@@ -838,7 +869,11 @@ function glassSVG(x,w){
 }
 
 
-var VERSION="1.1",NOTES=[
+var VERSION="1.5",NOTES=[
+["1.5",["Request emails now tell Claude to fetch the app from GitHub and commit the new drink itself, so no file handling is needed."]],
+["1.4",["Lime Margarita now includes a pinch of salt.","Request emails now include a link that opens Claude with the request ready to build."]],
+["1.3",["Request a drink: new button at the top opens an email to the maker with your request. Also appears when a search finds nothing.","10 new high-end but simple cocktails: Jasmine, White Negroni, Bijou, 50/50 Martini, Bamboo, El Presidente, Toronto, Monte Carlo, Reposado Old Fashioned, Death in the Afternoon.","7 new sangrias: White, Rose, Sparkling Red, Tropical, Apple Cinnamon, Berry Herb and a hot Winter Sangria. Amounts are per glass; use 5x for a bottle."]],
+["1.2",["New drink: Lime Margarita (1 oz blanco tequila, 1 oz lime juice, 3/4 oz triple sec, 1/4 oz agave syrup)."]],
 ["1.1",["Credit footer added at the bottom (Designed and built by Jameson Spence).","Version number and release notes moved to the top bar, same layout as GameScore."]],
 ["1.0",[
 "186 recipes across 8 base spirits, with an emphasis on easy drinks and margarita variations.",
@@ -854,6 +889,17 @@ var VERSION="1.1",NOTES=[
 ]]];
 $("vtxt").textContent="Stir Crazy v"+VERSION;
 $("notes").innerHTML="<h3>Release notes</h3>"+NOTES.map(function(n){return "<h4>v"+n[0]+"</h4><ul>"+n[1].map(function(t){return "<li>"+t+"</li>"}).join("")+"</ul>"}).join("");
+var REQUEST_EMAIL="jamiespence@gmail.com";
+function reqOpen(name){var o=$("req").hidden||!!name;$("req").hidden=!o;$("reqbtn").setAttribute("aria-expanded",o);if(o){if(name)$("rq-n").value=name;$("req").scrollIntoView({block:"start"});$("rq-n").focus()}}
+$("reqbtn").addEventListener("click",function(){reqOpen()});
+$("rq-s").addEventListener("click",function(){
+  var n=$("rq-n").value.trim();if(!n){$("rq-n").focus();return}
+  var w=$("rq-w").value.trim(),r=$("rq-r").value.trim();
+  var ask="Add this drink to my Stir Crazy cocktail picker. Get the current index.html yourself from my GitHub repo jamesonespence/Stir-crazy (do not ask me for the file). Match the format of the other recipes, bump the version and release notes, test it at phone size, and commit it straight to the main branch if you have GitHub write access. Then give me the live site link (https://jamesonespence.github.io/Stir-crazy/), and if you could not commit, give me the index.html file and the upload link (https://github.com/jamesonespence/Stir-crazy/upload/main). Drink: "+n+"."+(r?" Notes: "+r+".":"")+(w?" Requested by "+w+".":"");
+  var body="Drink: "+n+"\n"+(r?"Recipe or notes: "+r+"\n":"")+(w?"From: "+w+"\n":"")+"\nBuild it in Claude (opens a new chat with the request filled in):\nhttps://claude.ai/new?q="+encodeURIComponent(ask)+"\n\nSent from Stir Crazy";
+  location.href="mailto:"+REQUEST_EMAIL+"?subject="+encodeURIComponent("Stir Crazy drink request: "+n)+"&body="+encodeURIComponent(body);
+});
+$("grid").addEventListener("click",function(e){var b=e.target.closest("[data-req]");if(b)reqOpen(b.getAttribute("data-req"))});
 $("relbtn").addEventListener("click",function(){var o=$("notes").hidden;$("notes").hidden=!o;this.setAttribute("aria-expanded",o)});
 function frac(x){
   var r=Math.round(x*8)/8,w=Math.floor(r),f=r-w;
@@ -868,6 +914,7 @@ function qty(i){
   var a=q*serv;
   if(u==="oz")return unit==="oz"?frac(a)+" oz":(Math.round(a*30/5)*5)+" ml";
   if(u==="dash")return frac(a)+(a===1?" dash":" dashes");
+  if(u==="pinch")return frac(a)+(a===1?" pinch":" pinches");
   return frac(a);
 }
 function tasteLine(x){
