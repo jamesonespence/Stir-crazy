@@ -164,9 +164,6 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 .notes h3{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
 .notes h4{margin:12px 0 2px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em}
 .notes ul{margin:2px 0 0;padding-left:18px;color:var(--ink);font-size:14px}
-.rq{display:grid;gap:4px;margin:10px 0}
-.rq label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.rq input,.rq textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;width:100%}
 .credit{margin:28px 0 12px;padding:0 0 6px;text-align:center;color:var(--muted)}
 .credit .cr-rule{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--whiskey-num),var(--gin-num));opacity:.85;margin:0 auto 18px;max-width:320px}
 .credit .cr-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.04em;color:var(--ink);box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--line)}
@@ -177,16 +174,8 @@ h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(32px,7vw,
 </style></head><body>
 
 <div class="app">
-  <div class="verbar"><span id="vtxt"></span><span><button type="button" id="reqbtn" class="linkbtn" aria-expanded="false">Request a drink</button> <button type="button" id="relbtn" class="linkbtn" aria-expanded="false">Release notes</button></span></div>
-  <section id="req" class="panel notes" hidden>
-    <h3>Request a drink</h3>
-    <p class="meta">Tell me what to add. This opens an email to me with your request filled in. Press send in your email app to finish.</p>
-    <div class="rq"><label for="rq-n">Drink name</label><input id="rq-n" type="text" autocomplete="off"></div>
-    <div class="rq"><label for="rq-r">Recipe or notes (optional)</label><textarea id="rq-r" rows="3"></textarea></div>
-    <div class="rq"><label for="rq-w">Your name (optional)</label><input id="rq-w" type="text" autocomplete="name"></div>
-    <button type="button" class="btn pri" id="rq-s">Send request</button>
-  </section>
-  <section id="notes" class="panel notes" hidden></section>
+  <div class="verbar"><span id="vtxt"></span><button type="button" id="relbtn" class="linkbtn" aria-expanded="false">Release notes</button></div>
+    <section id="notes" class="panel notes" hidden></section>
   <header class="hd">
     <h1>Stir Crazy</h1>
     <div class="meta" id="meta"></div>
@@ -556,7 +545,7 @@ function render(){
       +'<button class="fav" type="button" data-i="'+i+'" aria-pressed="'+f+'" aria-label="Save '+x.n+'">'+(f?"&#9829;":"&#9825;")+'</button></div>';
   });
   if(!res.length){
-    h='<div class="empty">'+(F.b==="__fav"&&!fav.length&&!act.length&&!F.q?"No saved drinks yet. Tap the heart on any drink to keep it here.":"No drink matches all of those. Try clearing a filter.")+(F.q?' <button type="button" class="linkbtn" data-req="'+F.q.replace(/[&<>"]/g,"")+'">Request "'+F.q.replace(/[&<>"]/g,"")+'"</button>':"")+'</div>';
+    h='<div class="empty">'+(F.b==="__fav"&&!fav.length&&!act.length&&!F.q?"No saved drinks yet. Tap the heart on any drink to keep it here.":"No drink matches all of those. Try clearing a filter.")+'</div>';
   }
   $("grid").innerHTML=h;
 }
@@ -869,7 +858,9 @@ function glassSVG(x,w){
 }
 
 
-var VERSION="1.5",NOTES=[
+var VERSION="1.7",NOTES=[
+["1.7",["Request a drink removed for now."]],
+["1.6",["Request a drink moved to the middle of the top bar, away from Release notes.","Requests can now be stored with a form service instead of emailed. Until that is switched on, the button still opens an email."]],
 ["1.5",["Request emails now tell Claude to fetch the app from GitHub and commit the new drink itself, so no file handling is needed."]],
 ["1.4",["Lime Margarita now includes a pinch of salt.","Request emails now include a link that opens Claude with the request ready to build."]],
 ["1.3",["Request a drink: new button at the top opens an email to the maker with your request. Also appears when a search finds nothing.","10 new high-end but simple cocktails: Jasmine, White Negroni, Bijou, 50/50 Martini, Bamboo, El Presidente, Toronto, Monte Carlo, Reposado Old Fashioned, Death in the Afternoon.","7 new sangrias: White, Rose, Sparkling Red, Tropical, Apple Cinnamon, Berry Herb and a hot Winter Sangria. Amounts are per glass; use 5x for a bottle."]],
@@ -889,17 +880,6 @@ var VERSION="1.5",NOTES=[
 ]]];
 $("vtxt").textContent="Stir Crazy v"+VERSION;
 $("notes").innerHTML="<h3>Release notes</h3>"+NOTES.map(function(n){return "<h4>v"+n[0]+"</h4><ul>"+n[1].map(function(t){return "<li>"+t+"</li>"}).join("")+"</ul>"}).join("");
-var REQUEST_EMAIL="jamiespence@gmail.com";
-function reqOpen(name){var o=$("req").hidden||!!name;$("req").hidden=!o;$("reqbtn").setAttribute("aria-expanded",o);if(o){if(name)$("rq-n").value=name;$("req").scrollIntoView({block:"start"});$("rq-n").focus()}}
-$("reqbtn").addEventListener("click",function(){reqOpen()});
-$("rq-s").addEventListener("click",function(){
-  var n=$("rq-n").value.trim();if(!n){$("rq-n").focus();return}
-  var w=$("rq-w").value.trim(),r=$("rq-r").value.trim();
-  var ask="Add this drink to my Stir Crazy cocktail picker. Get the current index.html yourself from my GitHub repo jamesonespence/Stir-crazy (do not ask me for the file). Match the format of the other recipes, bump the version and release notes, test it at phone size, and commit it straight to the main branch if you have GitHub write access. Then give me the live site link (https://jamesonespence.github.io/Stir-crazy/), and if you could not commit, give me the index.html file and the upload link (https://github.com/jamesonespence/Stir-crazy/upload/main). Drink: "+n+"."+(r?" Notes: "+r+".":"")+(w?" Requested by "+w+".":"");
-  var body="Drink: "+n+"\n"+(r?"Recipe or notes: "+r+"\n":"")+(w?"From: "+w+"\n":"")+"\nBuild it in Claude (opens a new chat with the request filled in):\nhttps://claude.ai/new?q="+encodeURIComponent(ask)+"\n\nSent from Stir Crazy";
-  location.href="mailto:"+REQUEST_EMAIL+"?subject="+encodeURIComponent("Stir Crazy drink request: "+n)+"&body="+encodeURIComponent(body);
-});
-$("grid").addEventListener("click",function(e){var b=e.target.closest("[data-req]");if(b)reqOpen(b.getAttribute("data-req"))});
 $("relbtn").addEventListener("click",function(){var o=$("notes").hidden;$("notes").hidden=!o;this.setAttribute("aria-expanded",o)});
 function frac(x){
   var r=Math.round(x*8)/8,w=Math.floor(r),f=r-w;
